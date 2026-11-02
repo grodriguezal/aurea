@@ -5,9 +5,9 @@ const money = new Intl.NumberFormat('es-VE',{style:'currency', currency:'USD',mi
 const number = new Intl.NumberFormat('es-VE',{maximumFractionDigits:2});
 const TROY_OZ_GRAMS = 31.1034768;
 const JEWELERS = [
-  {name:'Aurora',area:'Las Mercedes · ubicación ilustrativa',rating:'4,9',reviews:82,percent:.70, desc:'Atención personalizada y explicación de cada paso.',tag:'Mayor referencia'},
-  {name:'Lúmina',area:'Altamira · ubicación ilustrativa',rating:'4,8',reviews:64,percent:.68,desc:'Un proceso tranquilo, transparente y a tu ritmo.',tag:'A tu ritmo'},
-  {name:'Brillo',area:'Chacao · ubicación ilustrativa',rating:'4,7',reviews:106,percent:.66,desc:'Especialistas en revisión presencial de joyas.',tag:'Atención cercana'}
+  {name:'Joyería Aurora',area:'Las Mercedes · ubicación ilustrativa',rating:'4,9',reviews:82,percent:.70, desc:'Atención personalizada y explicación de cada paso.',tag:'Mayor referencia'},
+  {name:'Joyería Lúmina',area:'Altamira · ubicación ilustrativa',rating:'4,8',reviews:64,percent:.68,desc:'Un proceso tranquilo, transparente y a tu ritmo.',tag:'A tu ritmo'},
+  {name:'Joyería Brillo',area:'Chacao · ubicación ilustrativa',rating:'4,7',reviews:106,percent:.66,desc:'Especialistas en revisión presencial de joyas.',tag:'Atención cercana'}
 ];
 const names = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 let selected=new Set(['Anillos']), spot=null, result=null, shop=0, displayMonth=null, selectedDay='', selectedTime='';
@@ -42,15 +42,15 @@ function updateResult(){
   const gross=pure*spot.price/TROY_OZ_GRAMS;
   const purchase=gross*.7;
   $('pureWeight').textContent=`${number.format(pure)} g`;
-  $('grossAmount').textContent=money.format(gross);
+  
   $('offerAmount').textContent=money.format(purchase);
   $('calcWeight').textContent=`${number.format(result.weight)} g`;
-  $('calcPurity').textContent=`${result.karat}K / ${number.format(result.karat/24*100)}%`;
-  $('spotGram').textContent=money.format(spot.price/TROY_OZ_GRAMS);
+  $('calcPurity').textContent=`${result.karat}K / ${number.format(result.karat/24*100)}%`; $('displayPurity').textContent=`${result.karat}K`;
+
   const grid=$('offersGrid');grid.replaceChildren();
   JEWELERS.forEach((j,index)=>{
     const card=document.createElement('article');card.className='offer-card';
-    card.innerHTML=`<div class="offer-card-top"><span class="shop-monogram" aria-hidden="true">${j.name.slice(0,1)}</span><span class="offer-tag">${j.tag}</span></div><h4>${j.name}</h4><p class="shop-area">${j.area}</p><p class="shop-review"><span aria-hidden="true">★★★★★</span> ${j.rating} <small>(${j.reviews} opiniones ilustrativas)</small></p><p class="shop-description">${j.desc}</p><div class="shop-amount"><small>Referencia de compra · ${Math.round(j.percent*100)}%</small><strong>${money.format(gross*j.percent)}</strong></div><button type="button" class="button button-outline shop-book" data-shop="${index}">Elegir y ver citas <span aria-hidden="true">↗</span></button>`;
+    card.innerHTML=`<div class="offer-card-top"><span class="shop-monogram" aria-hidden="true">${j.name.replace(/^Joyería /,"").slice(0,1)}</span><span class="offer-tag">${j.tag}</span></div><h4>${j.name}</h4><p class="shop-area">${j.area}</p><p class="shop-review"><span aria-hidden="true">★★★★★</span> ${j.rating} <small>(${j.reviews} opiniones ilustrativas)</small></p><p class="shop-description">${j.desc}</p><div class="shop-amount"><small>Precio estimado de compra</small><strong>${money.format(gross*j.percent)}</strong></div><button type="button" class="button button-outline shop-book" data-shop="${index}">Elegir y ver citas <span aria-hidden="true">↗</span></button>`;
     grid.appendChild(card);
   });
   grid.querySelectorAll('[data-shop]').forEach(btn=>btn.addEventListener('click',()=>{chooseShop(Number(btn.dataset.shop));$('cita').scrollIntoView({behavior:'smooth',block:'start'});}));
