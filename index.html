@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F8F0DC">
+  <meta name="description" content="Aurea. Lo que tienes vale. Descubre el valor de tus piezas de oro, conoce tus opciones y decide a tu ritmo.">
+  <title>Aurea · Lo que tienes vale</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <div class="site-shell">
+    <header class="site-header" id="inicio">
+      <div class="container nav-wrap">
+        <a class="brand" href="#inicio" aria-label="Aurea, volver al inicio"><img src="assets/logo-primary.png" alt="Aurea. Lo que tienes vale" width="189" height="60"></a>
+        <nav class="desktop-nav" aria-label="Navegación principal">
+          <a href="#como-funciona">Cómo funciona</a>
+          <a href="#conoce-tu-oro">Conoce tu oro</a>
+          <a href="#preguntas">Preguntas frecuentes</a>
+        </nav>
+        <a href="#valoracion" class="button button-dark nav-cta">Descubrir mi oro <span aria-hidden="true">↗</span></a>
+        <button type="button" class="mobile-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileNav"><span></span><span></span></button>
+      </div>
+      <nav class="mobile-nav" id="mobileNav" aria-label="Navegación móvil" hidden>
+        <a href="#como-funciona">Cómo funciona</a><a href="#conoce-tu-oro">Conoce tu oro</a><a href="#preguntas">Preguntas frecuentes</a><a href="#valoracion">Descubrir mi oro</a>
+      </nav>
+    </header>
+
+    <main id="contenido">
+      <section class="hero">
+        <div class="hero-orbit hero-orbit-a" aria-hidden="true"></div>
+        <div class="hero-orbit hero-orbit-b" aria-hidden="true"></div>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-mark">✦</span> UNA NUEVA FORMA DE DESCUBRIR TU ORO</p>
+            <h1>Lo que tienes <em>vale.</em></h1>
+            <p class="hero-subtitle">Tus joyas guardan historias. También tienen valor. Descubre lo que podrían valer, conoce tus opciones y decide con calma.</p>
+            <div class="hero-actions"><a class="button button-gold button-large" href="#valoracion">Descubre el valor de tu oro <span aria-hidden="true">↗</span></a><a class="text-link" href="#como-funciona">Conoce cómo funciona <span aria-hidden="true">↘</span></a></div>
+            <div class="hero-reassurance"><span class="small-star">✳</span><p>Sin compromiso, sin presión.<br><strong>Tú decides qué hacer con tu oro.</strong></p></div>
+          </div>
+          <div class="hero-art" aria-label="Auro, el personaje de Aurea, descubriendo el valor del oro">
+            <div class="hero-art-stage"><span class="spark spark-one" aria-hidden="true">✦</span><span class="spark spark-two" aria-hidden="true">✧</span><span class="art-caption art-caption-top">¡Cada pieza cuenta!</span><img src="assets/auroscout.png" width="355" height="590" alt="Auro observando una pieza con su lupa"><span class="art-caption art-caption-bottom"><span class="gold-dot"></span> Tu oro, tus opciones</span></div>
+          </div>
+        </div>
+        <div class="hero-bottom"><div class="container hero-bottom-wrap"><span><b>01</b> Descubre</span><span class="line"></span><span><b>02</b> Conoce</span><span class="line"></span><span><b>03</b> Decide</span><span class="hero-bottom-note">TU VALOR, A TU RITMO <span aria-hidden="true">↘</span></span></div></div>
+      </section>
+
+      <section class="intro-strip" aria-label="Nuestra promesa"><div class="container promise-grid"><div><span class="promise-symbol">✳</span><p><strong>Sin compromiso</strong><small>Consulta con libertad</small></p></div><div><span class="promise-symbol">◇</span><p><strong>Todo claro</strong><small>Te explicamos cada paso</small></p></div><div><span class="promise-symbol">♡</span><p><strong>Tú decides</strong><small>Siempre a tu ritmo</small></p></div></div></section>
+
+      <section class="section discover" id="conoce-tu-oro"><div class="container discover-grid"><div class="section-illustration"><div class="illustration-circle"></div><img src="assets/aura-main.png" alt="Aura sosteniendo una pieza de oro" width="230" height="346"><span class="floating-note">Tu oro puede darte<br><strong>nuevas posibilidades ✨</strong></span></div><div class="section-copy"><p class="eyebrow"><span class="eyebrow-mark">✦</span> TU ORO TIENE VALOR</p><h2>Hay algo valioso<br>en lo que ya tienes.</h2><p>Ese anillo que ya no usas. Una cadena olvidada. Unos pendientes que guardaste hace años.</p><p>En Aurea te ayudamos a conocer el valor de tus piezas y a entender tus opciones con transparencia, sin prisas y sin obligación de vender.</p><a class="button button-outline" href="#valoracion">Quiero conocer mis opciones <span aria-hidden="true">↗</span></a></div></div></section>
+
+      <section class="section valuation-section" id="valoracion"><div class="container"><div class="valuation-header"><div><p class="eyebrow"><span class="eyebrow-mark">✦</span> EMPECEMOS POR LO IMPORTANTE</p><h2>¿Qué oro tienes<br><em>en casa?</em></h2></div><p>No necesitas saberlo todo sobre tus joyas. Cuéntanos un poquito y te mostraremos el siguiente paso.</p></div><div class="valuation-card" id="valuationCard"><div class="form-step-bar"><span class="step-number">01 <span>/ 02</span></span><span class="step-progress-label">Conoce tus piezas</span><div class="progress-track"><span id="stepProgress"></span></div></div>
+        <form id="valuationForm" novalidate>
+          <div class="form-main" id="valuationFirstStep"><h3>Cuéntanos sobre tu oro.</h3><p class="form-lede">Selecciona las piezas que te gustaría valorar.</p><div class="piece-grid" id="pieceGrid" role="group" aria-label="Tipo de piezas de oro"><button type="button" class="piece active" data-piece="Anillos" aria-pressed="true"><span>◌</span> Anillos</button><button type="button" class="piece" data-piece="Cadenas" aria-pressed="false"><span>⌁</span> Cadenas</button><button type="button" class="piece" data-piece="Pulseras" aria-pressed="false"><span>◎</span> Pulseras</button><button type="button" class="piece" data-piece="Pendientes" aria-pressed="false"><span>♧</span> Pendientes</button><button type="button" class="piece" data-piece="Otras piezas" aria-pressed="false"><span>✧</span> Otras piezas</button></div>
+          <div class="form-fields"><label>¿Conoces su peso aproximado? <span>(opcional)</span><span class="input-with-unit"><input id="weight" type="number" min="0" max="99999" step="0.1" inputmode="decimal" placeholder="Ej. 12"><b>gramos</b></span></label><label>¿Sabes de cuántos quilates es? <span>(opcional)</span><select id="purity"><option value="">No lo sé, ¡no pasa nada!</option><option value="10K">10K</option><option value="14K">14K</option><option value="18K">18K</option><option value="21K">21K</option><option value="22K">22K</option><option value="24K">24K</option></select></label></div><div class="form-footer"><p><span>♡</span> Si no conoces el peso o los quilates, lo podrán comprobar en la valoración presencial.</p><button type="submit" class="button button-dark">Continuar <span aria-hidden="true">→</span></button></div></div>
+          <div class="form-main form-result" id="valuationSecondStep" hidden><div class="result-visual"><img src="assets/celebrate.png" alt="Personaje celebrando" width="136" height="101"></div><h3>¡Ya sabemos por dónde empezar!</h3><p class="form-lede">Has seleccionado <strong id="resultPieces">anillos</strong><span id="resultExtras"></span>. El peso y la pureza exactos se confirmarán en una valoración presencial.</p><div class="result-note"><span>✦</span><p><strong>Una estimación no es una oferta.</strong><br>El valor y cualquier propuesta de compra dependerán de la revisión física de tus piezas en una joyería aliada.</p></div><div class="form-footer"><button type="button" id="startOver" class="text-link">← Cambiar mis piezas</button><a href="#cita" class="button button-dark">Conoce el siguiente paso <span aria-hidden="true">→</span></a></div></div>
+        </form></div><p class="demo-disclaimer">Esta es una demostración del recorrido. No genera cotizaciones ni transmite datos a ningún establecimiento.</p></div></section>
+
+      <section class="section process-section" id="como-funciona"><div class="container"><div class="section-heading"><div><p class="eyebrow"><span class="eyebrow-mark">✦</span> ASÍ DE SENCILLO</p><h2>Tu oro, en buenas manos.<br><em>De principio a fin.</em></h2></div><p>Un proceso claro para que sepas qué esperar en cada momento.</p></div><div class="process-grid"><article class="process-card"><div class="process-art"><img src="assets/step-discover.png" alt="Auro observando oro con una lupa" loading="lazy"></div><span class="process-no">01 / DESCUBRE</span><h3>Conoce el valor</h3><p>Cuéntanos sobre las piezas que tienes y empieza a explorar tus opciones, sin compromiso.</p></article><article class="process-card"><div class="process-art"><img src="assets/step-schedule.png" alt="Aura con un calendario para agendar" loading="lazy"></div><span class="process-no">02 / AGENDA</span><h3>Encuentra tu momento</h3><p>Solicita una visita para conocer la valoración en persona, según disponibilidad.</p></article><article class="process-card"><div class="process-art"><img src="assets/step-visit.png" alt="Aureo y Aura revisando una joya" loading="lazy"></div><span class="process-no">03 / VERIFICA</span><h3>Visita una joyería</h3><p>Un establecimiento aliado verifica el peso, la pureza y las características de tus piezas.</p></article><article class="process-card"><div class="process-art"><img src="assets/step-sell.png" alt="Aura con una pieza de oro" loading="lazy"></div><span class="process-no">04 / TÚ DECIDES</span><h3>Elige con confianza</h3><p>Conoce la oferta y decide si quieres vender. La decisión siempre es tuya.</p></article></div></div></section>
+
+      <section class="section next-step" id="cita"><div class="container next-grid"><div><p class="eyebrow"><span class="eyebrow-mark">✦</span> EL SIGUIENTE PASO</p><h2>Descubrir no te<br>compromete a nada.</h2><p>Cuando estés listo, podrás solicitar una visita a una joyería aliada. Allí revisarán tus piezas contigo, te explicarán su valoración y resolverán tus dudas.</p><p class="micro-note">La agenda real y los establecimientos aliados estarán disponibles cuando se active el servicio.</p></div><div class="next-card"><div class="next-card-header"><img src="assets/aureo-main.png" alt="Aureo organiza los siguientes pasos" loading="lazy"><div><span class="small-tag">AUREO TE ACOMPAÑA</span><h3>Todo claro.<br>Paso a paso.</h3></div></div><div class="next-points"><p><span>1</span> Verificamos los datos de la pieza presencialmente.</p><p><span>2</span> Te explicamos la valoración y las condiciones.</p><p><span>3</span> Tú decides si quieres vender.</p></div><button class="button button-gold button-full" type="button" id="demoAppointment">Ver cómo sería solicitar una cita <span aria-hidden="true">↗</span></button><p class="demo-status" id="appointmentStatus" role="status" aria-live="polite"></p></div></div></section>
+
+      <section class="section faq-section" id="preguntas"><div class="container faq-grid"><div><p class="eyebrow"><span class="eyebrow-mark">✦</span> SIN LETRA PEQUEÑA</p><h2>Preguntar también<br><em>vale oro.</em></h2><p>Queremos que te sientas seguro en cada paso. Aquí resolvemos algunas dudas habituales.</p><img class="faq-person" src="assets/aura-main.png" alt="Aura sonriente" loading="lazy"></div><div class="faq-items"><details><summary>¿Tengo que vender mis joyas si las llevo a valorar?<span>+</span></summary><p>No. Puedes conocer la valoración y decidir libremente si aceptas o no una oferta.</p></details><details><summary>¿Qué pasa si no sé cuánto pesan mis piezas?<span>+</span></summary><p>No necesitas saberlo. Un establecimiento aliado puede comprobar el peso y la pureza durante la visita presencial.</p></details><details><summary>¿El valor que aparece online es definitivo?<span>+</span></summary><p>No. Cualquier indicación inicial sería orientativa. La valoración y oferta definitivas requieren revisar físicamente cada pieza.</p></details><details><summary>¿Cómo se calcula el valor de mis joyas?<span>+</span></summary><p>Influyen el peso, la pureza del oro, su cotización y las condiciones de compra del establecimiento. Te explicaremos qué se está midiendo y qué se está estimando.</p></details><details><summary>¿También ofrecen préstamos con garantía de oro?<span>+</span></summary><p>No es un servicio disponible en esta fase. El recorrido inicial de Aurea se centra en conocer el valor y en la venta voluntaria de oro.</p></details></div></div></section>
+
+      <section class="footer-cta"><div class="container footer-cta-inner"><div><p class="eyebrow">✦ LO QUE TIENES VALE</p><h2>Tu oro puede abrir<br><em>nuevas posibilidades.</em></h2><p>El primer paso es descubrirlas.</p><a class="button button-dark" href="#valoracion">Descubre tu oro <span aria-hidden="true">↗</span></a></div><img src="assets/auroscout.png" alt="Auro con su lupa" loading="lazy"></div></section>
+    </main>
+    <footer class="site-footer"><div class="container"><div class="footer-main"><a href="#inicio"><img src="assets/logo-primary.png" alt="Aurea. Lo que tienes vale" width="172" height="55"></a><p>Una forma más clara y cercana de conocer el valor de tu oro.</p><div class="footer-links"><a href="#como-funciona">Cómo funciona</a><a href="#valoracion">Conoce tus piezas</a><a href="#preguntas">Preguntas</a></div></div><div class="footer-bottom"><small>© <span id="year">2026</span> Aurea. Mockup conceptual de experiencia.</small><small>Prototipo de diseño · Sin operaciones ni citas reales</small></div></div></footer>
+  </div>
+</body>
+</html>
