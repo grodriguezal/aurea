@@ -38,17 +38,14 @@ export default function Intro() {
         </div>
       </header>
 
-      <StoryMascot scene="invite" size={196} className="hero-story-character" />
-
       <section className="container promise-grid" aria-label="Las ventajas de Tilín">
         {PROMISES.map((p, i) => (
           <article className="card promise-story-card" key={p.title} {...reveal(400 + i * 110)}>
-            <StoryMascot scene={p.scene as StoryScene} size={162} className="promise-story-character" />
+            <StoryMascot scene={p.scene as StoryScene} size={112} className="promise-story-character" />
             <div className="promise-story-copy"><h2>{p.title}</h2><p>{p.body}</p></div>
           </article>
         ))}
       </section>
-
     </div>
   )
 }
