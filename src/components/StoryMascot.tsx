@@ -4,6 +4,7 @@ import { BotAvatar } from 'bot-avatars'
 /**
  * Only four carefully placed characters on the home:
  * three small, contextual benefits and one thoughtful question.
+ * The exact same clover plush is reused; only the middle card smiles and hops.
  * Their accessories are simple, flat yellow SVG accents without dark outlines.
  */
 export type StoryScene = 'explore' | 'compare' | 'choose' | 'question'
@@ -67,21 +68,25 @@ export default function StoryMascot({ scene, size = 112, className = '' }: Props
     '--story-size': `${size}px`,
     '--bot-size': `${botSize}px`,
   } as CSSProperties
-  const square = scene === 'compare'
+  const celebrating = scene === 'compare'
 
   return (
     <div ref={root} className={`story-character story-character--${scene} ${className}`} style={style} aria-hidden="true">
       <div className="story-character__avatar">
         {visible && <BotAvatar
-          type={square ? 'square' : 'clover'}
+          type="clover"
           size={botSize}
-          color={square ? '#b9a6e8' : '#d3bbdd'}
+          color="#d3bbdd"
           ink="#1F1B2E"
-          seed={square ? 0.3 : 0.6}
+          seed={0.6}
           furLength={0.5}
+          face={celebrating ? 'mouth' : undefined}
+          speed={celebrating ? 1.05 : 1}
+          jumpHeight={celebrating ? 30 : 26}
+          interactive={false}
           jumpEvery={0}
           jumpSpin={0}
-          state={scene === 'question' ? 'working' : 'default'}
+          state={celebrating ? 'working' : 'default'}
         />}
       </div>
       <YellowAccent scene={scene} />
