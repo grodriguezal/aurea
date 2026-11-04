@@ -1,5 +1,5 @@
 import { reveal } from '../../lib/reveal.ts'
-import { SIGNIN_HREF } from '../../lib/route.ts'
+import { openSignIn, SIGNIN_HREF } from '../../lib/route.ts'
 import goldTexture from '../../assets/gold-texture.jpg'
 
 export default function ValueSection() {
@@ -12,7 +12,7 @@ export default function ValueSection() {
           <p>Ese anillo que ya no usas. Una cadena olvidada. Unos pendientes que guardaste hace años.</p>
           <p>En <strong>Tilín</strong> te ayudamos a conocer el valor de tus piezas y a entender tus opciones con transparencia, sin prisas y sin obligación de vender.</p>
         </div>
-        <a className="button button-dark" href={SIGNIN_HREF} {...reveal(240)}>VER MIS OPCIONES</a>
+        <a className="button button-dark" href={SIGNIN_HREF} onClick={openSignIn} {...reveal(240)}>VER MIS OPCIONES</a>
       </div>
       <div className="value-art" aria-hidden="true">
         <span className="value-square" {...reveal(150)} />

@@ -8,8 +8,8 @@ import Logo from '../components/Logo.tsx'
 import { storeById } from '../data/stores.ts'
 import { api, ApiError, type Session } from '../lib/api.ts'
 import { fetchSpotPrice } from '../lib/goldPrice.ts'
-import { formatPhone } from '../lib/phone.ts'
-import { navigate } from '../lib/route.ts'
+import { DrawerClose } from '../components/Drawer.tsx'
+import { closeDrawer } from '../lib/route.ts'
 import { clearPendingSlot, loadChat, readPendingSlot, saveChat, setSession } from '../lib/session.ts'
 
 const REVEAL_MS = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 550
@@ -35,7 +35,8 @@ export default function Chat({ session }: { session: Session }) {
   /** Typed text shown as the user's bubble while it's being interpreted. */
   const [pending, setPending] = useState('')
   const [spot, setSpot] = useState<SpotState>({ status: 'loading' })
-  const endRef = useRef<HTMLDivElement>(null)
+  /** The thread is its own scroll container inside the drawer. */
+  const threadRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const loadSpot = useCallback(
@@ -72,7 +73,8 @@ export default function Chat({ session }: { session: Session }) {
   const typing = busy || revealing
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: REVEAL_MS ? 'smooth' : 'auto', block: 'end' })
+    const el = threadRef.current
+    el?.scrollTo({ top: el.scrollHeight, behavior: REVEAL_MS ? 'smooth' : 'auto' })
   }, [visible, typing, state.step, pending])
 
   const spotPrice = spot.status === 'ok' ? spot.price : null
@@ -138,7 +140,7 @@ export default function Chat({ session }: { session: Session }) {
 
   const signOut = () => {
     setSession(null)
-    navigate('home', { replace: true })
+    closeDrawer()
   }
 
   const lastOptionsId = [...state.messages].reverse().find((m) => m.kind === 'options')?.id
@@ -185,15 +187,15 @@ export default function Chat({ session }: { session: Session }) {
       <header className="app-bar chat-bar">
         <Logo />
         <div className="chat-bar-actions">
-          <span className="chat-bar-phone">{formatPhone(session.user.phone)}</span>
           <button type="button" className="text-button app-bar-link" disabled={busy} onClick={() => setState((s) => restartChat(s))}>
-            Nueva consulta
+            Nueva<span className="hide-narrow"> consulta</span>
           </button>
           <button type="button" className="text-button app-bar-link" onClick={signOut}>Salir</button>
+          <DrawerClose onClose={closeDrawer} />
         </div>
       </header>
 
-      <main className="chat-thread" id="contenido" aria-label="Conversación con Tilín">
+      <div className="chat-thread" ref={threadRef}>
         <ol className="chat-messages" aria-live="polite">
           {runs.map((run, i) => (
             // Keyed by position: runs only ever append, so the mascot stays mounted while a run grows.
@@ -221,8 +223,7 @@ export default function Chat({ session }: { session: Session }) {
           </div>
         )}
         {error && <p className="form-error chat-error" role="alert">{error}</p>}
-        <div ref={endRef} />
-      </main>
+      </div>
 
       <form className="chat-composer" onSubmit={(e) => void submitText(e)}>
         <label className="visually-hidden" htmlFor="chat-input">Escribe tu respuesta</label>

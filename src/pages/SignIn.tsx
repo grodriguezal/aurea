@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import Logo from '../components/Logo.tsx'
 import { api, ApiError, MOCK_CODE } from '../lib/api.ts'
 import { formatPhone, toE164 } from '../lib/phone.ts'
-import { navigate } from '../lib/route.ts'
+import { DrawerClose } from '../components/Drawer.tsx'
+import { closeDrawer, navigate } from '../lib/route.ts'
 import { setSession } from '../lib/session.ts'
 
 const CODE_LENGTH = 6
@@ -66,10 +67,10 @@ export default function SignIn() {
     <div className="auth-page">
       <header className="app-bar">
         <Logo />
-        <a className="text-button app-bar-link" href="#inicio">Volver</a>
+        <DrawerClose onClose={closeDrawer} />
       </header>
 
-      <main className="auth-main" id="contenido">
+      <div className="auth-main">
         <div className="panel auth-card">
           <div className="panel-head">
             <p className="eyebrow"><span aria-hidden="true">✦</span> Entra con WhatsApp</p>
@@ -103,8 +104,7 @@ export default function SignIn() {
                     }}
                     aria-invalid={!!error}
                     aria-describedby={error ? 'auth-error' : undefined}
-                    autoFocus
-                  />
+                                      />
                 </span>
               </label>
               <button type="submit" className="button button-dark button-full" disabled={busy || !phoneInput.trim()}>
@@ -164,7 +164,7 @@ export default function SignIn() {
           )}
           <p className="fine-print">Al continuar aceptas que te escribamos por WhatsApp sobre tu consulta y tus citas. No compartimos tu número.</p>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

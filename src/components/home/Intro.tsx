@@ -1,5 +1,5 @@
 import { reveal } from '../../lib/reveal.ts'
-import { SIGNIN_HREF } from '../../lib/route.ts'
+import { openSignIn, SIGNIN_HREF } from '../../lib/route.ts'
 import heroUnion from '../../assets/hero-union.svg'
 import { CloverBot, DotsBot } from '../Characters.tsx'
 import Logo from '../Logo.tsx'
@@ -33,7 +33,7 @@ export default function Intro() {
               <span className="pill-word word-mueve">mueve</span>
             </span>
           </h1>
-          <a className="button button-yellow button-shadow" href={SIGNIN_HREF}>CALCULA EL VALOR DE TU ORO</a>
+          <a className="button button-yellow button-shadow" href={SIGNIN_HREF} onClick={openSignIn}>CALCULA EL VALOR DE TU ORO</a>
         </div>
       </header>
 
