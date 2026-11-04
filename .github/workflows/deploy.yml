@@ -77,12 +77,7 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         shell: bash
         run: |
-          status=$(curl -sSL -o /tmp/pages-cancel-response -w '%{http_code}' \\
-            -X POST \\
-            -H "Accept: application/vnd.github+json" \\
-            -H "Authorization: Bearer $GH_TOKEN" \\
-            -H "X-GitHub-Api-Version: 2022-11-28" \\
-            "https://api.github.com/repos/$REPOSITORY/pages/deployments/6c2672bb7da15ab186f1167e364d3ddc337ec8f4/cancel")
+          status=$(curl -sSL -o /tmp/pages-cancel-response -w '%{http_code}' -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$REPOSITORY/pages/deployments/6c2672bb7da15ab186f1167e364d3ddc337ec8f4/cancel")
           echo "Previous Pages deployment cancel status: $status"
           if [ "$status" != 204 ] && [ "$status" != 404 ] && [ "$status" != 409 ]; then
             cat /tmp/pages-cancel-response
