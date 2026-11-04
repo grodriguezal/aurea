@@ -1,5 +1,6 @@
 import { reveal } from '../../lib/reveal.ts'
 import goldTexture from '../../assets/gold-texture.jpg'
+import StoryMascot from '../StoryMascot.tsx'
 
 export default function ValueSection() {
   return (
@@ -16,6 +17,7 @@ export default function ValueSection() {
       <div className="value-art" aria-hidden="true">
         <span className="value-square" {...reveal(150)} />
         <img className="value-photo" {...reveal(300)} src={goldTexture} width={426} height={639} alt="" />
+        <StoryMascot scene="question" size={230} className="value-question-character" />
       </div>
     </section>
   )
