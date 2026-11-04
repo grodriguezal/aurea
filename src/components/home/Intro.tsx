@@ -1,13 +1,13 @@
 import { reveal } from '../../lib/reveal.ts'
 import { openSignIn, SIGNIN_HREF } from '../../lib/route.ts'
 import heroUnion from '../../assets/hero-union.svg'
-import { CloverBot, DotsBot } from '../Characters.tsx'
+import StoryMascot, { type StoryScene } from '../StoryMascot.tsx'
 import Logo from '../Logo.tsx'
 
 const PROMISES = [
-  { title: 'Una primera referencia', body: 'Explora un precio estimado con el peso, los quilates y la cotización del oro.' },
-  { title: 'Más de una opción', body: 'Descubre cómo comparar alternativas de distintas joyerías en un solo lugar.' },
-  { title: 'Sin presión para vender', body: 'Conoces la oferta final en persona. Aceptarla o no depende de ti.' },
+  { title: 'Una primera referencia', body: 'Explora un precio estimado con el peso, los quilates y la cotización del oro.', scene: 'explore' },
+  { title: 'Más de una opción', body: 'Descubre cómo comparar alternativas de distintas joyerías en un solo lugar.', scene: 'compare' },
+  { title: 'Sin presión para vender', body: 'Conoces la oferta final en persona. Aceptarla o no depende de ti.', scene: 'choose' },
 ]
 
 export default function Intro() {
@@ -38,18 +38,17 @@ export default function Intro() {
         </div>
       </header>
 
-      <CloverBot className="intro-crown" />
+      <StoryMascot scene="invite" size={196} className="hero-story-character" />
 
       <section className="container promise-grid" aria-label="Las ventajas de Tilín">
         {PROMISES.map((p, i) => (
-          <article className="card" key={p.title} {...reveal(400 + i * 110)}>
-            <h2>{p.title}</h2>
-            <p>{p.body}</p>
+          <article className="card promise-story-card" key={p.title} {...reveal(400 + i * 110)}>
+            <StoryMascot scene={p.scene as StoryScene} size={162} className="promise-story-character" />
+            <div className="promise-story-copy"><h2>{p.title}</h2><p>{p.body}</p></div>
           </article>
         ))}
       </section>
 
-      <DotsBot className="intro-dots" {...reveal(200)} />
     </div>
   )
 }
