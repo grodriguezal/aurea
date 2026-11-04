@@ -46,8 +46,9 @@ export default function Booking() {
     <section className="container section booking-section" id="cita" aria-labelledby="bookingHeading">
       <div className="panel booking-calendar" {...reveal()}>
         <div className="booking-head">
-          <p className="eyebrow"><span aria-hidden="true">✦</span> Calendario de citas</p>
-          <h2 id="bookingHeading" className="result-title">Encuentra tu momento</h2>
+          <p className="eyebrow"><span aria-hidden="true">✦</span> Cuando sepas dónde quieres ir</p>
+          <h2 id="bookingHeading" className="result-title">Elige cuándo realizar tu valoración</h2>
+          <p className="booking-intro">Después de comparar, el siguiente paso es revisar tus piezas en persona. Explora el calendario y elige una joyería. Por ahora, los establecimientos y horarios son ilustrativos.</p>
           <label className="field">
             <span className="field-label">Joyería de tu preferencia</span>
             <span className="field-box field-select">
@@ -80,15 +81,15 @@ export default function Booking() {
           <div className="booking-feedback" role="status" aria-live="polite" hidden={status.kind !== 'booked'}>
             {status.kind === 'booked' && session && (
               <>
-                <strong>¡Tu cita está agendada!</strong>
+                <strong>{api.mock ? 'Horario seleccionado para la demostración' : '¡Tu cita está agendada!'}</strong>
                 <p>
                   <b>{store.name}</b>, {dateLabel(day)} a las {time}.{' '}
-                  {status.notified ? `Te enviamos la confirmación por WhatsApp al ${formatPhone(session.user.phone)}.` : 'Modo de prueba: la confirmación por WhatsApp todavía no se envía.'}
+                  {api.mock ? 'No se ha registrado una reserva ni se ha notificado a la joyería.' : status.notified ? `Te enviamos la confirmación por WhatsApp al ${formatPhone(session.user.phone)}.` : 'La cita se registró, pero no pudimos enviar la notificación por WhatsApp.'}
                 </p>
               </>
             )}
           </div>
-          {store.example && <p className="fine-print">Joyerías y horarios de ejemplo mientras conectamos a las joyerías aliadas.</p>}
+          {store.example && <p className="fine-print">Estas joyerías, fechas y horas son ejemplos; no representan disponibilidad real ni reservas confirmadas.</p>}
         </div>
         <Calendar
           className="booking-cal"
