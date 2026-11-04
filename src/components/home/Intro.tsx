@@ -5,9 +5,9 @@ import { CloverBot, DotsBot } from '../Characters.tsx'
 import Logo from '../Logo.tsx'
 
 const PROMISES = [
-  { title: 'Conoce el valor', body: 'Cuéntanos qué tipo de piezas tienes y te damos un precio orientativo.' },
-  { title: 'Haz una cita', body: 'Compara las distintas ofertas, y escoge el comprador según tus preferencias.' },
-  { title: 'Elige con confianza', body: 'Conoce la propuesta final y decide si la aceptas. Tu oro sigue siendo tuyo.' },
+  { title: 'Una primera referencia', body: 'Explora un precio estimado con el peso, los quilates y la cotización del oro.' },
+  { title: 'Más de una opción', body: 'Descubre cómo comparar alternativas de distintas joyerías en un solo lugar.' },
+  { title: 'Sin presión para vender', body: 'Conoces la oferta final en persona. Aceptarla o no depende de ti.' },
 ]
 
 export default function Intro() {
@@ -16,7 +16,7 @@ export default function Intro() {
       <header className="hero">
         <Logo className="hero-logo" />
         <div className="hero-content">
-          <p className="hero-tagline">Trae tu oro. Sal con efectivo. Rápido, justo y sin comisiones.</p>
+          <p className="hero-tagline">¿Quieres vender oro? Descubre cuánto podrían pagarte y compara joyerías sin dar vueltas.</p>
           <h1 className="hero-title">
             <span className="visually-hidden">El oro no se guarda, se mueve</span>
             <span className="pill-headline" aria-hidden="true">
@@ -33,15 +33,16 @@ export default function Intro() {
               <span className="pill-word word-mueve">mueve</span>
             </span>
           </h1>
-          <a className="button button-yellow button-shadow" href={SIGNIN_HREF} onClick={openSignIn}>CALCULA EL VALOR DE TU ORO</a>
+          <a className="button button-yellow button-shadow" href={SIGNIN_HREF} onClick={openSignIn}>DESCUBRE CUÁNTO PODRÍAN PAGARTE</a>
+          <p className="hero-note">Conoce tus opciones antes de decidir. Sin compromiso de venta.</p>
         </div>
       </header>
 
       <CloverBot className="intro-crown" />
 
-      <section className="container promise-grid" aria-label="Cómo te ayudamos">
+      <section className="container promise-grid" aria-label="Las ventajas de Tilín">
         {PROMISES.map((p, i) => (
-          <article className="card" key={p.title} {...reveal(900 + i * 110)}>
+          <article className="card" key={p.title} {...reveal(400 + i * 110)}>
             <h2>{p.title}</h2>
             <p>{p.body}</p>
           </article>
