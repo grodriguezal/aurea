@@ -1,0 +1,13 @@
+diff --git a/node_modules/bot-avatars/dist/index.es.js b/node_modules/bot-avatars/dist/index.es.js
+index 301ff9a..90f91e6 100644
+--- a/node_modules/bot-avatars/dist/index.es.js
++++ b/node_modules/bot-avatars/dist/index.es.js
+@@ -3299,7 +3299,7 @@ const Ee = () => typeof matchMedia == "function" && matchMedia("(prefers-reduced
+     const kt = Jt.current;
+     if (!kt) return;
+     let _t = !0, Nt = null;
+-    const Fn = 3, so = (zn) => {
++    const Fn = 1e6, so = (zn) => {
+       const Ro = U.current;
+       if (Ro) {
+         if (Wt.current && !Number.isNaN(os.x)) {

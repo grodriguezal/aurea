@@ -1,20 +1,47 @@
-# Aurea — Mockup web
+# Tilín — Mockup web
 
-Primera iteración del sitio de **Aurea · Lo que tienes vale.**
+Sitio de **Tilín · El oro no se guarda, se mueve.** (antes Aurea)
 
 ## Objetivo
-Construir una web cálida, clara y confiable que permita a las personas explorar el valor de sus piezas de oro antes de decidir libremente. Inspirada en el Manual de Marca v2.0 (02 nov 2026).
+Construir una web cálida, clara y confiable que permita a las personas explorar el valor de sus piezas de oro antes de decidir libremente. Diseño basado en el frame «Web» de Figma (nov 2026).
 
 ## Prototipo
-Web responsive estática (HTML, CSS y JavaScript), compatible con GitHub Pages sin proceso de compilación. Incluye presentación de marca, exploración de piezas, proceso de venta voluntaria, preguntas frecuentes y propuesta de cita presencial.
+App web con **Vite + React + TypeScript**, base para las siguientes fases (inicio de sesión, chat con IA, perfil). La página de inicio incluye la marca, exploración de piezas, proceso de venta voluntaria, calendario de citas y preguntas frecuentes. Los dos personajes de la cabecera son avatares animados de [`bot-avatars`](https://libraries.dev/bots).
 
-**Importante:** Es un mockup de interfaz. No hay precio en tiempo real, ni cotizaciones vinculantes, ni formularios que envíen datos, ni reservas reales. El crédito con garantía queda fuera del lanzamiento.
+**Importante:** Es un mockup de interfaz. No hay cotizaciones vinculantes, ni reservas reales; en modo de prueba no se envía ningún dato. El crédito con garantía queda fuera del lanzamiento.
+
+### Desarrollo
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # genera dist/
+npm run lint
+```
+
+### Chat de venta
+Los CTA de la página llevan a `#/entrar` (código por WhatsApp) y luego a `#/chat`, una conversación guiada: intención → piezas → peso → quilates → precio aproximado → prioridad (→ zona) → joyerías → calendario → confirmación → otros intereses. La conversación se guarda en el navegador y se retoma al volver.
+
+Sin `VITE_API_URL` todo funciona en **modo de prueba**: el código es `123456`, el texto libre se interpreta con palabras clave (`src/chat/parse.ts`) y no se envían mensajes. Con `VITE_API_URL=https://<worker>` la app usa el Worker de Cloudflare; el contrato de endpoints está documentado en `src/lib/api.ts`.
+
+### Estructura
+- `src/pages/Home.tsx`: página de inicio.
+- `src/pages/SignIn.tsx`, `src/pages/Chat.tsx`: acceso con WhatsApp y chat.
+- `src/chat/`: guion del chat (`flow.ts`), textos y opciones (`labels.ts`), intérprete local (`parse.ts`).
+- `src/components/chat/`: tarjetas (precio, joyerías, cita) y controles de cada paso.
+- `src/data/stores.ts`: joyerías del chat (de ejemplo hasta cargar las aliadas); `src/lib/pricing.ts`: precios, ranking y horarios.
+- `src/components/home/`: secciones (cabecera, valoración, proceso, citas, preguntas, cierre).
+- `src/components/Characters.tsx`: personajes (avatares animados y versiones estáticas).
+- `src/lib/`, `src/data/`: cotización del oro, formatos y joyerías de ejemplo.
+
+### Publicación
+`.github/workflows/deploy.yml` compila y publica en GitHub Pages en cada push a `main` (requiere *Settings → Pages → Source: GitHub Actions*).
 
 ## Identidad
-Paleta #E7CE80, #F8F0DC, #242420, #FFFDF8. Tipografías Manrope e Inter. Logo y personajes originales aprobados de Aurea. Las ilustraciones deben usarse sin redibujar ni deformar, con fondos transparentes.
+Paleta #FBE87A, #FFFFFF, #424040, #707070, #FBFBF7. Tipografías Fraunces 72pt SuperSoft (titulares), Space Grotesk (texto e interfaz) y BBH Bartle (logotipo), cargadas desde Google Fonts. Personajes: los dos blobs morados (corona y estela de puntos), exportados desde Figma.
 
 ## Por implementar
 - Sustitución por los archivos PNG maestros del ZIP visual.
 - Motor de valoración orientativa con precios y condiciones verificadas.
-- Agenda y directorio de joyerías aliadas.
+- Directorio de joyerías aliadas (`src/data/stores.ts`).
+- Worker de Cloudflare + D1 con Gemini y WhatsApp Cloud API (ver contrato en `src/lib/api.ts`).
 - Políticas legales y de privacidad, analítica y pruebas de accesibilidad.
