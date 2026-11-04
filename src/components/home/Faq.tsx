@@ -1,5 +1,4 @@
-import { DotsPlush } from '../Characters.tsx'
-
+import { reveal } from '../../lib/reveal.ts'
 const QUESTIONS = [
   { q: '¿Tengo que vender mis joyas si las llevo a valorar?', a: 'No. Puedes conocer la valoración y decidir libremente si aceptas o no una oferta.' },
   { q: '¿Qué pasa si no sé cuánto pesan mis piezas?', a: 'No necesitas saberlo. Un establecimiento aliado puede comprobar el peso y la pureza durante la visita presencial.' },
@@ -11,15 +10,14 @@ const QUESTIONS = [
 export default function Faq() {
   return (
     <section className="container section faq" id="preguntas">
-      <div className="faq-intro">
+      <div className="faq-intro" {...reveal()}>
         <p className="eyebrow"><span aria-hidden="true">✦</span> Sin letra pequeña</p>
-        <h2 className="display display-md">Preguntar también vale oro.</h2>
+        <h2 className="display display-lg">Preguntar también vale oro.</h2>
         <p className="lede">Queremos que te sientas seguro en cada paso. Aquí resolvemos algunas dudas habituales.</p>
-        <DotsPlush className="character-small" />
       </div>
       <div className="faq-items">
-        {QUESTIONS.map(({ q, a }) => (
-          <details key={q}>
+        {QUESTIONS.map(({ q, a }, i) => (
+          <details key={q} {...reveal(i * 80)}>
             <summary>{q}<span aria-hidden="true">+</span></summary>
             <p>{a}</p>
           </details>

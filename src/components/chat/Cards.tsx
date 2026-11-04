@@ -34,15 +34,16 @@ function SpotLine({ spot, onRetry }: { spot: SpotState; onRetry: () => void }) {
   )
 }
 
-export function EstimateCard({ pieces, weight, karat, spot, onRetry }: { pieces: Piece[]; weight: number | null; karat: Karat | null; spot: SpotState; onRetry: () => void }) {
-  const estimate = marketEstimate(STORES, weight, karat, spotPrice(spot))
+export function EstimateCard({ pieces, weight, karat, storeId, spot, onRetry }: { pieces: Piece[]; weight: number | null; karat: Karat | null; storeId?: string; spot: SpotState; onRetry: () => void }) {
+  const store = storeId ? storeById(storeId) : undefined
+  const estimate = store ? storeEstimate(store, weight, karat, spotPrice(spot)) : marketEstimate(STORES, weight, karat, spotPrice(spot))
   return (
     <div className="chat-card estimate-card">
       <span className="summary-label">{weight ? 'Precio aproximado' : 'Precio aproximado por gramo'}</span>
       <strong className="estimate-price">{estimate ? rangeText(estimate) : spot.status === 'loading' ? '…' : '—'}</strong>
       <p className="estimate-for">{itemSummary(pieces, weight, karat)}</p>
       <SpotLine spot={spot} onRetry={onRetry} />
-      <small>Rango orientativo en USD según lo que pagan las joyerías. La oferta final se confirma al revisar tu pieza en persona.</small>
+      <small>{store ? `Importe orientativo en USD según lo que paga ${store.name}.` : 'Rango orientativo en USD según lo que pagan las joyerías.'} La oferta final se confirma al revisar tu pieza en persona.</small>
     </div>
   )
 }

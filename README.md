@@ -6,7 +6,7 @@ Sitio de **Tilín · El oro no se guarda, se mueve.** (antes Aurea)
 Construir una web cálida, clara y confiable que permita a las personas explorar el valor de sus piezas de oro antes de decidir libremente. Diseño basado en el frame «Web» de Figma (nov 2026).
 
 ## Prototipo
-App web con **Vite + React + TypeScript**, base para las siguientes fases (inicio de sesión, chat con IA, perfil). La página de inicio incluye la marca, exploración de piezas, proceso de venta voluntaria, calendario de citas y preguntas frecuentes. Los dos personajes de la cabecera son avatares animados de [`bot-avatars`](https://libraries.dev/bots).
+App web con **Vite + React + TypeScript**, base para las siguientes fases (inicio de sesión, chat con IA, perfil). La página de inicio incluye la marca, «Tu oro tiene valor», el calendario de citas, el proceso («Así de sencillo») y preguntas frecuentes. Los dos personajes de la cabecera son avatares animados de [`bot-avatars`](https://libraries.dev/bots).
 
 **Importante:** Es un mockup de interfaz. No hay cotizaciones vinculantes, ni reservas reales; en modo de prueba no se envía ningún dato. El crédito con garantía queda fuera del lanzamiento.
 
@@ -19,7 +19,7 @@ npm run lint
 ```
 
 ### Chat de venta
-Los CTA de la página llevan a `#/entrar` (código por WhatsApp) y luego a `#/chat`, una conversación guiada: intención → piezas → peso → quilates → precio aproximado → prioridad (→ zona) → joyerías → calendario → confirmación → otros intereses. La conversación se guarda en el navegador y se retoma al volver.
+El calendario de la página agenda directamente si hay sesión; si no, guarda joyería, día y hora, pide el WhatsApp y abre el chat con la cita ya elegida (piezas → peso → quilates → precio → confirmar). Los demás CTA llevan a `#/entrar` (código por WhatsApp) y luego a `#/chat`, una conversación guiada: intención → piezas → peso → quilates → precio aproximado → prioridad (→ zona) → joyerías → calendario → confirmación → otros intereses. La conversación se guarda en el navegador y se retoma al volver.
 
 Sin `VITE_API_URL` todo funciona en **modo de prueba**: el código es `123456`, el texto libre se interpreta con palabras clave (`src/chat/parse.ts`) y no se envían mensajes. Con `VITE_API_URL=https://<worker>` la app usa el Worker de Cloudflare; el contrato de endpoints está documentado en `src/lib/api.ts`.
 
@@ -29,9 +29,8 @@ Sin `VITE_API_URL` todo funciona en **modo de prueba**: el código es `123456`, 
 - `src/chat/`: guion del chat (`flow.ts`), textos y opciones (`labels.ts`), intérprete local (`parse.ts`).
 - `src/components/chat/`: tarjetas (precio, joyerías, cita) y controles de cada paso.
 - `src/data/stores.ts`: joyerías del chat (de ejemplo hasta cargar las aliadas); `src/lib/pricing.ts`: precios, ranking y horarios.
-- `src/components/home/`: secciones (cabecera, valoración, proceso, citas, preguntas, cierre).
+- `src/components/home/`: secciones (cabecera, tu oro tiene valor, citas, proceso, preguntas, pie).
 - `src/components/Characters.tsx`: personajes (avatares animados y versiones estáticas).
-- `src/lib/`, `src/data/`: cotización del oro, formatos y joyerías de ejemplo.
 
 ### Publicación
 `.github/workflows/deploy.yml` compila y publica en GitHub Pages en cada push a `main` (requiere *Settings → Pages → Source: GitHub Actions*).

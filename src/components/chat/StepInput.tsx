@@ -121,6 +121,14 @@ export default function StepInput({ state, onSubmit, busy }: { state: ChatState;
       return <Chips options={ZONES} disabled={busy} onPick={(o) => onSubmit({ step, zone: o.value }, o.label)} />
     case 'schedule':
       return draft.storeId ? <Schedule key={draft.storeId} storeId={draft.storeId} onSubmit={onSubmit} disabled={busy} /> : null
+    case 'confirm':
+      return (
+        <Chips
+          options={[{ value: true, label: 'Confirmar cita' }, { value: false, label: 'Cambiar fecha u hora' }]}
+          disabled={busy}
+          onPick={(o) => onSubmit(o.value ? { step, confirm: true, notified: false } : { step, confirm: false }, o.label)}
+        />
+      )
     case 'crossSell':
       return (
         <MultiChips<Intent>

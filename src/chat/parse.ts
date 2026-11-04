@@ -109,6 +109,12 @@ export function parseLocally(step: Step, raw: string): Answer | null {
       const [zone] = matches(text, ZONE_WORDS)
       return zone ? { step, zone } : null
     }
+    case 'confirm': {
+      if (/\b(cambi|otro dia|otra hora|otra fecha|mejor otro)/.test(text)) return { step, confirm: false }
+      if (NO.test(text)) return { step, confirm: false }
+      if (YES.test(text) || /\bconfirm/.test(text)) return { step, confirm: true, notified: false }
+      return null
+    }
     case 'crossSell': {
       if (NO.test(text)) return { step, interests: [] }
       const interests = matches(text, INTENT_WORDS).filter((i) => i !== 'vender')

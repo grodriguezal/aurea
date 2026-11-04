@@ -1,3 +1,4 @@
+import { reveal } from '../../lib/reveal.ts'
 import { SIGNIN_HREF } from '../../lib/route.ts'
 import heroUnion from '../../assets/hero-union.svg'
 import { CloverBot, DotsBot } from '../Characters.tsx'
@@ -39,15 +40,15 @@ export default function Intro() {
       <CloverBot className="intro-crown" />
 
       <section className="container promise-grid" aria-label="Cómo te ayudamos">
-        {PROMISES.map((p) => (
-          <article className="card" key={p.title}>
+        {PROMISES.map((p, i) => (
+          <article className="card" key={p.title} {...reveal(900 + i * 110)}>
             <h2>{p.title}</h2>
             <p>{p.body}</p>
           </article>
         ))}
       </section>
 
-      <DotsBot className="intro-dots" />
+      <DotsBot className="intro-dots" {...reveal(200)} />
     </div>
   )
 }

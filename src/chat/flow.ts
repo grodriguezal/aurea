@@ -1,7 +1,8 @@
 import { STORES, storeById } from '../data/stores.ts'
+import { dateLabel } from '../lib/dates.ts'
 import { rankStores } from '../lib/pricing.ts'
 import { INTENT_PHRASE, listJoin } from './labels.ts'
-import type { Answer, ChatState, Draft, Message, Step } from './types.ts'
+import type { Answer, BookingSnapshot, ChatState, Draft, Message, PresetSlot, Step } from './types.ts'
 
 /**
  * The scripted sell flow. Pure: (state, answer) → next state, bot copy included.
@@ -30,6 +31,32 @@ export function startChat(): ChatState {
 export function restartChat(state: ChatState): ChatState {
   return { step: 'intent', draft: emptyDraft(), messages: [...state.messages, bot('¡Vamos con una nueva consulta! ' + ASK_INTENT)] }
 }
+
+const slotText = (slot: PresetSlot) => `${storeById(slot.storeId)?.name ?? 'la joyería'} el ${dateLabel(slot.day)} a las ${slot.time}`
+
+/**
+ * Starts from an appointment picked on the landing page: skips intent, priority and
+ * store choice, and asks only what's needed to confirm it. Appends to `prev` if there is one.
+ */
+export function startWithSlot(prev: ChatState | null, slot: PresetSlot): ChatState {
+  const greeting = prev ? [] : [bot('¡Hola! Soy Tilín. Te ayudo a conocer el valor de tu oro y a encontrar dónde moverlo, sin compromiso.')]
+  return {
+    step: 'pieces',
+    draft: { ...emptyDraft(), intent: 'vender', storeId: slot.storeId, slot: { day: slot.day, time: slot.time } },
+    messages: [
+      ...(prev?.messages ?? []),
+      ...greeting,
+      bot(`Elegiste tu cita en ${slotText(slot)}.`),
+      bot('Para confirmarla, cuéntame qué pieza o piezas quieres vender. Puedes elegir varias.'),
+    ],
+  }
+}
+
+const bookingMessage = (draft: Draft, day: string, time: string, notified: boolean): Message => {
+  const booking: BookingSnapshot = { storeId: draft.storeId!, day, time, pieces: draft.pieces, weight: draft.weight ?? null, karat: draft.karat ?? null, notified }
+  return { id: id(), from: 'bot', kind: 'booking', booking }
+}
+const ASK_CROSS_SELL = 'Aparte de vender, ¿te interesaría en un futuro…?'
 
 const plural = (d: Draft) => d.pieces.length > 1 || d.pieces.includes('otras')
 
@@ -91,9 +118,15 @@ export function applyAnswer(state: ChatState, answer: Answer, userText: string, 
     case 'karat': {
       draft.karat = answer.karat
       if (answer.karat === null) out.push(bot('¡No pasa nada! La joyería lo comprueba contigo. Te muestro un rango entre 10k y 18k, que son los más comunes.'))
-      out.push({ id: id(), from: 'bot', kind: 'estimate', pieces: draft.pieces, weight: draft.weight ?? null, karat: answer.karat })
-      out.push(bot('¿Qué te importa más a la hora de vender?'))
-      step = 'priority'
+      const preset = draft.slot && draft.storeId ? { ...draft.slot, storeId: draft.storeId } : null
+      out.push({ id: id(), from: 'bot', kind: 'estimate', pieces: draft.pieces, weight: draft.weight ?? null, karat: answer.karat, storeId: preset?.storeId })
+      if (preset) {
+        out.push(bot(`¿Confirmamos tu cita en ${slotText(preset)}?`))
+        step = 'confirm'
+      } else {
+        out.push(bot('¿Qué te importa más a la hora de vender?'))
+        step = 'priority'
+      }
       break
     }
     case 'priority': {
@@ -124,14 +157,21 @@ export function applyAnswer(state: ChatState, answer: Answer, userText: string, 
     case 'schedule': {
       if (!draft.storeId) return state
       draft.slot = { day: answer.day, time: answer.time }
-      out.push({
-        id: id(),
-        from: 'bot',
-        kind: 'booking',
-        booking: { storeId: draft.storeId, day: answer.day, time: answer.time, pieces: draft.pieces, weight: draft.weight ?? null, karat: draft.karat ?? null, notified: answer.notified },
-      })
-      out.push(bot('Aparte de vender, ¿te interesaría en un futuro…?'))
+      out.push(bookingMessage(draft, answer.day, answer.time, answer.notified))
+      out.push(bot(ASK_CROSS_SELL))
       step = 'crossSell'
+      break
+    }
+    case 'confirm': {
+      if (!draft.storeId || !draft.slot) return state
+      if (answer.confirm) {
+        out.push(bookingMessage(draft, draft.slot.day, draft.slot.time, answer.notified))
+        out.push(bot(ASK_CROSS_SELL))
+        step = 'crossSell'
+      } else {
+        out.push(bot(`¡Claro! ¿Qué día y hora te vendrían mejor en ${storeById(draft.storeId)?.name ?? 'la joyería'}?`))
+        step = 'schedule'
+      }
       break
     }
     case 'crossSell': {
@@ -163,6 +203,7 @@ const HINTS: Partial<Record<Step, string>> = {
   weight: 'Escribe el peso aproximado en gramos, por ejemplo "12 gramos". Si no lo sabes, elige "No lo sé".',
   karat: 'Dime los quilates (10k, 14k, 18k, 21k, 22k o 24k). Si no lo sabes, no pasa nada.',
   priority: '¿Qué prefieres: cercanía, mejor precio o reputación de la tienda?',
+  confirm: '¿Confirmamos la cita? Responde sí, o dime si prefieres cambiar la fecha.',
   zone: 'Dime tu municipio o tu urbanización, por ejemplo "Chacao" o "Las Mercedes".',
   crossSell: 'Puedes elegir comprar, obtener un crédito, invertir o digitalizar, o decirme "por ahora no".',
 }
@@ -174,4 +215,4 @@ export function misunderstood(state: ChatState, userText: string): ChatState {
 }
 
 /** Steps where typing is accepted. */
-export const TEXT_STEPS: Step[] = ['intent', 'sellInstead', 'pieces', 'weight', 'karat', 'priority', 'zone', 'crossSell']
+export const TEXT_STEPS: Step[] = ['intent', 'sellInstead', 'pieces', 'weight', 'karat', 'priority', 'zone', 'confirm', 'crossSell']

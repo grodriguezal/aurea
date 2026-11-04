@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import type { ChatState } from '../chat/types.ts'
+import type { ChatState, PresetSlot } from '../chat/types.ts'
 import type { Session } from './api.ts'
 
 const SESSION_KEY = 'tilin.session'
@@ -38,3 +38,16 @@ export function useSession() {
 /** Conversation for a user, so they can pick up where they left off. */
 export const loadChat = (userId: string) => readJson<ChatState>(chatKey(userId))
 export const saveChat = (userId: string, state: ChatState) => localStorage.setItem(chatKey(userId), JSON.stringify(state))
+
+/** Appointment picked on the landing page by a signed-out user, carried through sign-in (this tab only). */
+const SLOT_KEY = 'tilin.pendingSlot'
+export const setPendingSlot = (slot: PresetSlot) => sessionStorage.setItem(SLOT_KEY, JSON.stringify(slot))
+export function readPendingSlot(): PresetSlot | null {
+  try {
+    const raw = sessionStorage.getItem(SLOT_KEY)
+    return raw ? (JSON.parse(raw) as PresetSlot) : null
+  } catch {
+    return null
+  }
+}
+export const clearPendingSlot = () => sessionStorage.removeItem(SLOT_KEY)

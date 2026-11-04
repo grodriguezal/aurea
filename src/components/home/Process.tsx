@@ -1,58 +1,36 @@
+import { reveal } from '../../lib/reveal.ts'
+import stepGold from '../../assets/step-gold.png'
+import stepYellow from '../../assets/step-yellow.jpg'
+import { SquareBot } from '../Characters.tsx'
+
+/** Staggered cards from the Figma "Así de sencillo" section; `tone` sets the background and text colour. */
 const STEPS = [
-  { title: 'Conoce el valor', body: 'Desde tu ordenador, indica el tipo de piezas, su peso y los quilates. Explora su valor orientativo.' },
-  { title: 'Encuentra tu momento', body: 'Compara propuestas y elige en el calendario el día y la hora que mejor te vengan.' },
-  { title: 'Visita una joyería', body: 'En la joyería, el profesional revisa contigo las piezas, el peso y la pureza del oro.' },
-  { title: 'Elige con confianza', body: 'Conoce la propuesta final y decide libremente si la aceptas. Tu oro sigue siendo tuyo.' },
-]
+  { tone: 'gold', title: 'Conoce el valor', body: 'Desde tu celular, indica el tipo de piezas, su peso y los quilates. Explora su valor orientativo.' },
+  { tone: 'light', title: 'Encuentra tu momento', body: 'Compara propuestas y elige en el calendario el día y la hora que mejor te vengan.' },
+  { tone: 'yellow', title: 'Visita la joyería', body: 'En la joyería, el profesional revisa contigo las piezas, el peso y la pureza del oro.' },
+  { tone: 'dark', title: 'Elige con confianza', body: 'Conoce la propuesta final y decide libremente si la aceptas. Tu oro sigue siendo tuyo.' },
+] as const
 
-const VISIT = [
-  { title: 'Llevas tus piezas', body: 'Acude el día elegido con tus joyas y la documentación que te solicite la joyería.' },
-  { title: 'Revisan el oro contigo', body: 'Se comprueba el peso, la pureza y el estado de las piezas delante de ti.' },
-  { title: 'Tú tienes la última palabra', body: 'Te explican la oferta final. Puedes aceptarla o marcharte con tus joyas.' },
-]
+const BACKGROUNDS: Partial<Record<(typeof STEPS)[number]['tone'], string>> = { gold: stepGold, yellow: stepYellow }
 
-const badge = (i: number) => String(i + 1).padStart(2, '0')
-
-export function Process() {
+export default function Process() {
   return (
-    <section className="container section" id="como-funciona">
-      <div className="section-head">
-        <p className="eyebrow"><span aria-hidden="true">✦</span> Así de sencillo</p>
-        <h2 className="display display-md">Tu oro, en buenas manos.<br />De principio a fin.</h2>
-        <p className="lede">Un proceso claro para que sepas qué esperar en cada momento.</p>
+    <section className="section process" id="como-funciona">
+      <div className="container section-head">
+        <p className="eyebrow" {...reveal()}><span aria-hidden="true">✦</span> Así de sencillo</p>
+        <h2 className="display display-lg" {...reveal(80)}>Tu oro, en buenas manos.<br />De principio a fin.</h2>
       </div>
-      <div className="process-grid">
+      <ol className="process-steps">
         {STEPS.map((s, i) => (
-          <article className="card" key={s.title}>
-            <span className="step-badge">{badge(i)}</span>
+          <li className={`process-step process-step-${s.tone}`} key={s.title} {...reveal(i * 120)}>
+            {BACKGROUNDS[s.tone] && <img className="process-step-bg" src={BACKGROUNDS[s.tone]} alt="" />}
+            <span className="process-badge">{String(i + 1).padStart(2, '0')}</span>
             <h3>{s.title}</h3>
             <p>{s.body}</p>
-          </article>
+            {s.tone === 'light' && <SquareBot className="process-bot" />}
+          </li>
         ))}
-      </div>
-    </section>
-  )
-}
-
-export function Visit() {
-  return (
-    <section className="visit" aria-labelledby="visitHeading">
-      <div className="container">
-        <div className="section-head">
-          <p className="eyebrow eyebrow-dark"><span aria-hidden="true">✦</span> Al llegar a la joyería</p>
-          <h2 className="display display-md" id="visitHeading">¿Qué ocurre en tu visita?</h2>
-          <p className="lede">No necesitas preparar nada complicado. El profesional te acompaña en cada paso.</p>
-        </div>
-        <div className="visit-grid">
-          {VISIT.map((s, i) => (
-            <article className="card card-white" key={s.title}>
-              <span className="step-badge step-badge-dark">{badge(i)}</span>
-              <h3>{s.title}</h3>
-              <p>{s.body}</p>
-            </article>
-          ))}
-        </div>
-      </div>
+      </ol>
     </section>
   )
 }

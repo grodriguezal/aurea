@@ -15,6 +15,8 @@ export type Step =
   | 'zone'
   | 'options'
   | 'schedule'
+  /** Appointment chosen on the landing page before signing in: confirm it or pick another time. */
+  | 'confirm'
   | 'crossSell'
   | 'done'
 
@@ -43,6 +45,8 @@ export type Answer =
   | { step: 'zone'; zone: Municipio }
   | { step: 'options'; storeId: string }
   | { step: 'schedule'; day: string; time: string; notified: boolean }
+  | { step: 'confirm'; confirm: true; notified: boolean }
+  | { step: 'confirm'; confirm: false }
   | { step: 'crossSell'; interests: Intent[] }
 
 export interface BookingSnapshot {
@@ -59,7 +63,8 @@ export interface BookingSnapshot {
 export type Message = { id: string } & (
   | { from: 'bot'; kind: 'text'; text: string }
   | { from: 'user'; kind: 'text'; text: string }
-  | { from: 'bot'; kind: 'estimate'; pieces: Piece[]; weight: number | null; karat: Karat | null }
+  /** `storeId` set: that store's estimate; otherwise the range across stores. */
+  | { from: 'bot'; kind: 'estimate'; pieces: Piece[]; weight: number | null; karat: Karat | null; storeId?: string }
   | { from: 'bot'; kind: 'options'; storeIds: string[]; priority: Priority }
   | { from: 'bot'; kind: 'booking'; booking: BookingSnapshot }
 )
@@ -68,4 +73,11 @@ export interface ChatState {
   step: Step
   draft: Draft
   messages: Message[]
+}
+
+/** An appointment picked before the chat started. */
+export interface PresetSlot {
+  storeId: string
+  day: string
+  time: string
 }

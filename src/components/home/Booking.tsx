@@ -1,88 +1,113 @@
+import { reveal } from '../../lib/reveal.ts'
 import { useState } from 'react'
 import chevron from '../../assets/chevron.svg'
-import { JEWELERS } from '../../data/jewelers.ts'
-import { dateLabel, keyDate } from '../../lib/dates.ts'
+import { STORES } from '../../data/stores.ts'
+import { api, ApiError } from '../../lib/api.ts'
+import { dateKey, dateLabel } from '../../lib/dates.ts'
+import { formatPhone } from '../../lib/phone.ts'
+import { storeSlots } from '../../lib/pricing.ts'
+import { navigate } from '../../lib/route.ts'
+import { setPendingSlot, useSession } from '../../lib/session.ts'
 import Calendar from '../Calendar.tsx'
 
-const timesFor = (key: string) => (keyDate(key).getDay() === 6 ? ['09:30', '11:00', '12:30'] : ['10:00', '11:30', '15:00', '16:30'])
+type Status = { kind: 'idle' } | { kind: 'booking' } | { kind: 'booked'; notified: boolean } | { kind: 'error'; message: string }
 
-interface Props {
-  shop: number
-  onShopChange: (index: number) => void
-}
-
-export default function Booking({ shop, onShopChange }: Props) {
+/**
+ * Pick a jeweler, day and time. Signed in: books on the spot.
+ * Signed out: carries the choice through sign-in into the chat, which asks for the rest.
+ */
+export default function Booking() {
+  const session = useSession()
+  const [storeId, setStoreId] = useState(STORES[0].id)
   const [day, setDay] = useState('')
   const [time, setTime] = useState('')
-  const [confirmed, setConfirmed] = useState(false)
+  const [status, setStatus] = useState<Status>({ kind: 'idle' })
+  const store = STORES.find((s) => s.id === storeId) ?? STORES[0]
 
-  // A new shop resets the chosen slot.
-  const [prevShop, setPrevShop] = useState(shop)
-  if (shop !== prevShop) {
-    setPrevShop(shop)
-    setDay('')
-    setTime('')
-    setConfirmed(false)
+  const reset = () => setStatus({ kind: 'idle' })
+
+  const book = async () => {
+    if (!day || !time) return
+    if (!session) {
+      setPendingSlot({ storeId, day, time })
+      navigate('signin')
+      return
+    }
+    setStatus({ kind: 'booking' })
+    try {
+      const { notified } = await api.book(session, { storeId, day, time, pieces: [], weight: null, karat: null })
+      setStatus({ kind: 'booked', notified })
+    } catch (e) {
+      setStatus({ kind: 'error', message: e instanceof ApiError ? e.message : 'No pudimos agendar la cita. Inténtalo de nuevo.' })
+    }
   }
 
   return (
-    <section className="container section" id="cita">
-      <div className="section-head">
-        <p className="eyebrow"><span aria-hidden="true">✦</span> Elige tu momento</p>
-        <h2 className="display display-md">La cita, a tu ritmo.</h2>
-        <p className="lede">Selecciona una joyería, el día y la hora que te convengan. La valoración en tienda te permitirá conocer una propuesta definitiva.</p>
-      </div>
-      <div className="booking">
-        <div className="booking-steps">
-          <h3>Tu visita en tres pasos</h3>
-          <ol>
-            <li><span className="step-badge">01</span><p><strong>Elige un establecimiento</strong>Compara las referencias de compra.</p></li>
-            <li><span className="step-badge">02</span><p><strong>Selecciona fecha y hora</strong>Escoge una opción en el calendario.</p></li>
-            <li><span className="step-badge">03</span><p><strong>Decide después de la visita</strong>Consultar no te obliga a vender.</p></li>
-          </ol>
-        </div>
-        <div className="panel booking-calendar" aria-labelledby="bookingHeading">
+    <section className="container section booking-section" id="cita" aria-labelledby="bookingHeading">
+      <div className="panel booking-calendar" {...reveal()}>
+        <div className="booking-head">
           <p className="eyebrow"><span aria-hidden="true">✦</span> Calendario de citas</p>
-          <h3 id="bookingHeading" className="result-title">Encuentra tu momento</h3>
+          <h2 id="bookingHeading" className="result-title">Encuentra tu momento</h2>
           <label className="field">
             <span className="field-label">Joyería de tu preferencia</span>
             <span className="field-box field-select">
-              <select value={shop} onChange={(e) => onShopChange(Number(e.target.value))}>
-                {JEWELERS.map((j, i) => <option key={j.name} value={i}>{j.name} · Establecimiento de ejemplo</option>)}
+              <select
+                value={storeId}
+                onChange={(e) => {
+                  setStoreId(e.target.value)
+                  setDay('')
+                  setTime('')
+                  reset()
+                }}
+              >
+                {STORES.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name} · {s.address}{s.example ? ' · ejemplo' : ''}</option>
+                ))}
               </select>
               <img src={chevron} width={20} height={20} alt="" />
             </span>
           </label>
+        </div>
 
-          <Calendar
-            day={day}
-            time={time}
-            onDay={(key) => {
-              setDay(key)
-              setTime('')
-              setConfirmed(false)
-            }}
-            onTime={(t) => {
-              setTime(t)
-              setConfirmed(false)
-            }}
-            isOpen={(d) => d.getDay() !== 0}
-            timesFor={timesFor}
-          />
-          <div className="booking-summary">{day && time ? `${JEWELERS[shop].name} · ${dateLabel(day)} · ${time}` : 'Elige día y hora para continuar.'}</div>
-          <button type="button" className="button button-dark button-full" disabled={!(day && time)} onClick={() => setConfirmed(true)}>
-            CONTINUAR CON LA CITA
+        <div className="booking-actions">
+          <div className="booking-summary">{day && time ? `${store.name} · ${dateLabel(day)} · ${time}` : 'Elige día y hora para continuar.'}</div>
+          <button type="button" className="button button-dark button-full" disabled={!(day && time) || status.kind === 'booking' || status.kind === 'booked'} onClick={() => void book()}>
+            {status.kind === 'booking' ? 'AGENDANDO…' : session ? 'AGENDAR CITA' : 'CONTINUAR CON LA CITA'}
           </button>
-          <p className="fine-print">Calendario ilustrativo: las fechas y horas mostradas no representan disponibilidad real y no se registran reservas.</p>
-          <div className="booking-feedback" role="status" aria-live="polite" hidden={!confirmed}>
-            {confirmed && (
+          {!session && <p className="fine-print">Te pediremos tu WhatsApp para confirmar la cita y conocer tus piezas.</p>}
+
+          {status.kind === 'error' && <p className="form-error" role="alert">{status.message}</p>}
+          <div className="booking-feedback" role="status" aria-live="polite" hidden={status.kind !== 'booked'}>
+            {status.kind === 'booked' && session && (
               <>
-                <strong>¡Tu elección está preparada!</strong>
-                <p>Has seleccionado <b>{JEWELERS[shop].name}</b>, {dateLabel(day)} a las {time}. Este ejemplo no registra ni confirma una cita; la reserva se realizará cuando el establecimiento esté conectado.</p>
+                <strong>¡Tu cita está agendada!</strong>
+                <p>
+                  <b>{store.name}</b>, {dateLabel(day)} a las {time}.{' '}
+                  {status.notified ? `Te enviamos la confirmación por WhatsApp al ${formatPhone(session.user.phone)}.` : 'Modo de prueba: la confirmación por WhatsApp todavía no se envía.'}
+                </p>
               </>
             )}
           </div>
+          {store.example && <p className="fine-print">Joyerías y horarios de ejemplo mientras conectamos a las joyerías aliadas.</p>}
         </div>
+        <Calendar
+          className="booking-cal"
+          key={storeId}
+          day={day}
+          time={time}
+          onDay={(key) => {
+            setDay(key)
+            setTime('')
+            reset()
+          }}
+          onTime={(t) => {
+            setTime(t)
+            reset()
+          }}
+          isOpen={(d) => storeSlots(store, dateKey(d)).length > 0}
+          timesFor={(key) => storeSlots(store, key)}
+          windowDays={30}
+        />
       </div>
     </section>
   )

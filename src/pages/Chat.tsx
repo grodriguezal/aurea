@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { applyAnswer, misunderstood, restartChat, startChat, TEXT_STEPS } from '../chat/flow.ts'
+import { applyAnswer, misunderstood, restartChat, startChat, startWithSlot, TEXT_STEPS } from '../chat/flow.ts'
 import type { Answer, ChatState, Message } from '../chat/types.ts'
 import { BookingCard, EstimateCard, OptionsCard, type SpotState } from '../components/chat/Cards.tsx'
 import StepInput from '../components/chat/StepInput.tsx'
@@ -10,7 +10,7 @@ import { api, ApiError, type Session } from '../lib/api.ts'
 import { fetchSpotPrice } from '../lib/goldPrice.ts'
 import { formatPhone } from '../lib/phone.ts'
 import { navigate } from '../lib/route.ts'
-import { loadChat, saveChat, setSession } from '../lib/session.ts'
+import { clearPendingSlot, loadChat, readPendingSlot, saveChat, setSession } from '../lib/session.ts'
 
 const REVEAL_MS = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 550
 
@@ -22,7 +22,11 @@ const PLACEHOLDERS: Partial<Record<ChatState['step'], string>> = {
 
 export default function Chat({ session }: { session: Session }) {
   const [initial] = useState(() => loadChat(session.user.id))
-  const [state, setState] = useState<ChatState>(() => initial ?? startChat())
+  // An appointment picked on the landing page before signing in starts a consultation around it.
+  const [state, setState] = useState<ChatState>(() => {
+    const slot = readPendingSlot()
+    return slot ? startWithSlot(initial, slot) : (initial ?? startChat())
+  })
   // Messages appear one at a time, like someone typing; a restored conversation shows at once.
   const [shown, setShown] = useState(initial ? initial.messages.length : 0)
   const [busy, setBusy] = useState(false)
@@ -51,6 +55,7 @@ export default function Chat({ session }: { session: Session }) {
     void loadSpot()
   }, [loadSpot])
 
+  useEffect(() => clearPendingSlot(), [])
   useEffect(() => saveChat(session.user.id, state), [session.user.id, state])
 
   // The user's own messages show at once; only the bot's are revealed one by one.
@@ -79,26 +84,33 @@ export default function Chat({ session }: { session: Session }) {
     setState((s) => applyAnswer(s, answer, label, { spot: spotPrice }))
   }
 
-  /** Answers from chips and widgets; booking goes through the API first. */
-  const submit = async (answer: Answer, label: string) => {
-    if (busy) return
-    setError('')
-    if (answer.step !== 'schedule') return apply(answer, label)
+  /** Applies an answer, booking through the API first when it schedules or confirms an appointment. */
+  const commit = async (answer: Answer, label: string) => {
     const { draft } = state
+    const slot = answer.step === 'schedule' ? { day: answer.day, time: answer.time } : answer.step === 'confirm' && answer.confirm ? draft.slot : null
+    if (!slot) return apply(answer, label)
     if (!draft.storeId) return
-    setBusy(true)
     try {
       const { notified } = await api.book(session, {
         storeId: draft.storeId,
-        day: answer.day,
-        time: answer.time,
+        ...slot,
         pieces: draft.pieces,
         weight: draft.weight ?? null,
         karat: draft.karat ?? null,
       })
-      apply({ ...answer, notified }, label)
+      apply({ ...answer, notified } as Answer, label)
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'No pudimos agendar la cita. Inténtalo de nuevo.')
+    }
+  }
+
+  /** Answers from chips and widgets. */
+  const submit = async (answer: Answer, label: string) => {
+    if (busy) return
+    setError('')
+    setBusy(true)
+    try {
+      await commit(answer, label)
     } finally {
       setBusy(false)
     }
@@ -115,7 +127,7 @@ export default function Chat({ session }: { session: Session }) {
     setBusy(true)
     try {
       const answer = await api.interpret(session, state.step, value, state.draft)
-      if (answer) apply(answer, value)
+      if (answer) await commit(answer, value)
       else setState((s) => misunderstood(s, value))
     } finally {
       setPending('')
@@ -138,7 +150,7 @@ export default function Chat({ session }: { session: Session }) {
       case 'text':
         return <p className="bubble bubble-bot">{m.text}</p>
       case 'estimate':
-        return <EstimateCard pieces={m.pieces} weight={m.weight} karat={m.karat} spot={spot} onRetry={retrySpot} />
+        return <EstimateCard pieces={m.pieces} weight={m.weight} karat={m.karat} storeId={m.storeId} spot={spot} onRetry={retrySpot} />
       case 'options':
         return (
           <OptionsCard
