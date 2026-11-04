@@ -7,11 +7,12 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
 concurrency:
-  group: pages
+  group: aurea-vite-pages
   cancel-in-progress: true
 
 jobs:
@@ -38,5 +39,34 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # The repository is currently also configured for legacy branch-based Pages.
+      # Wait for that automatic Jekyll deployment to finish so it cannot overwrite
+      # the Vite build and leave a blank page (index.html references /src/main.tsx).
+      - name: Wait for competing legacy Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 36); do
+            response=$(curl --fail --silent --show-error \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$REPOSITORY/actions/runs?head_sha=$HEAD_SHA&per_page=50")
+            legacy=$(echo "$response" | jq -r '[.workflow_runs[] | select(.path == "dynamic/pages/pages-build-deployment")] | first | .status // "missing"')
+            echo "Legacy Pages deployment: $legacy"
+            if [ "$legacy" = "completed" ]; then
+              sleep 5
+              exit 0
+            fi
+            if [ "$legacy" = "missing" ] && [ "$i" -ge 12 ]; then
+              echo "No legacy workflow found; custom Vite deployment proceeds."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Legacy workflow polling timed out; proceeding with custom deployment."
       - id: deployment
         uses: actions/deploy-pages@v4
