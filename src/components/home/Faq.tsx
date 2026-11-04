@@ -1,19 +1,22 @@
 import { reveal } from '../../lib/reveal.ts'
+
 const QUESTIONS = [
-  { q: '¿Tengo que vender mis joyas si las llevo a valorar?', a: 'No. Puedes conocer la valoración y decidir libremente si aceptas o no una oferta.' },
-  { q: '¿Qué pasa si no sé cuánto pesan mis piezas?', a: 'No necesitas saberlo. Un establecimiento aliado puede comprobar el peso y la pureza durante la visita presencial.' },
-  { q: '¿El valor que aparece online es definitivo?', a: 'No. Cualquier indicación inicial sería orientativa. La valoración y oferta definitivas requieren revisar físicamente cada pieza.' },
-  { q: '¿Cómo se calcula el valor de mis joyas?', a: 'Influyen el peso, la pureza del oro, su cotización y las condiciones de compra del establecimiento. Te explicaremos qué se está midiendo y qué se está estimando.' },
-  { q: '¿También ofrecen préstamos con garantía de oro?', a: 'No es un servicio disponible en esta fase. El recorrido inicial de Tilín se centra en conocer el valor y en la venta voluntaria de oro.' },
+  { q: '¿Tilín me compra el oro?', a: 'No. Tilín te ayuda a conocer precios orientativos, comparar opciones y encontrar joyerías. La compra, si decides hacerla, se realiza directamente con el establecimiento.' },
+  { q: '¿El precio que aparece online es definitivo?', a: 'No. Es una estimación basada en la información que proporcionas y las referencias disponibles. La joyería comprueba el peso y la pureza y te presenta la propuesta definitiva en persona.' },
+  { q: '¿Qué pasa si no sé el peso o los quilates?', a: 'Puedes continuar con tu consulta. Cuando falten datos, Tilín podrá mostrar un rango o referencias por gramo. La comprobación exacta se realiza presencialmente.' },
+  { q: '¿Es obligatorio vender después de la valoración?', a: 'En absoluto. Puedes escuchar la propuesta y decidir que no. Tus piezas siguen siendo tuyas hasta que aceptes una venta.' },
+  { q: '¿Por qué el precio de compra puede ser distinto del valor del oro?', a: 'La cotización internacional es una referencia para el metal puro. El precio que ofrece cada joyería también depende de la pureza de tus piezas y de sus propias condiciones de compra.' },
+  { q: '¿Son reales las joyerías y los horarios que aparecen?', a: 'En esta versión son ejemplos para mostrar cómo funcionará la comparación. Los precios, las reseñas y los horarios no son ofertas reales y la selección de una cita no constituye una reserva confirmada.' },
+  { q: '¿Para qué me piden mi WhatsApp?', a: 'En la experiencia actual se utiliza para acceder y continuar tu consulta. El acceso se está probando: todavía no se envían mensajes reales ni confirmaciones de citas.' },
 ]
 
 export default function Faq() {
   return (
     <section className="container section faq" id="preguntas">
       <div className="faq-intro" {...reveal()}>
-        <p className="eyebrow"><span aria-hidden="true">✦</span> Sin letra pequeña</p>
+        <p className="eyebrow"><span aria-hidden="true">✦</span> Dudas claras, respuestas claras</p>
         <h2 className="display display-lg">Preguntar también vale oro.</h2>
-        <p className="lede">Queremos que te sientas seguro en cada paso. Aquí resolvemos algunas dudas habituales.</p>
+        <p className="lede">Antes de vender, es normal tener preguntas. Queremos que entiendas cómo funciona todo, sin letra pequeña.</p>
       </div>
       <div className="faq-items">
         {QUESTIONS.map(({ q, a }, i) => (
