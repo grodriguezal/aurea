@@ -9,7 +9,6 @@ import { storeSlots } from '../../lib/pricing.ts'
 import { navigate } from '../../lib/route.ts'
 import { setPendingSlot, useSession } from '../../lib/session.ts'
 import Calendar from '../Calendar.tsx'
-import StoryMascot from '../StoryMascot.tsx'
 
 type Status = { kind: 'idle' } | { kind: 'booking' } | { kind: 'booked'; notified: boolean } | { kind: 'error'; message: string }
 
@@ -48,7 +47,7 @@ export default function Booking() {
       <div className="panel booking-calendar" {...reveal()}>
         <div className="booking-head">
           <p className="eyebrow"><span aria-hidden="true">✦</span> Cuando sepas dónde quieres ir</p>
-          <div className="booking-story-heading"><h2 id="bookingHeading" className="result-title">Elige cuándo realizar tu valoración</h2><StoryMascot scene="calendar" size={130} className="booking-story-character" /></div>
+          <h2 id="bookingHeading" className="result-title">Elige cuándo realizar tu valoración</h2>
           <p className="booking-intro">Después de comparar, el siguiente paso es revisar tus piezas en persona. Explora el calendario y elige una joyería. Por ahora, los establecimientos y horarios son ilustrativos.</p>
           <label className="field">
             <span className="field-label">Joyería de tu preferencia</span>
