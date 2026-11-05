@@ -5,7 +5,8 @@ import { BotAvatar } from 'bot-avatars'
  * Only four carefully placed characters on the home:
  * three small, contextual benefits and one thoughtful question.
  * The exact same clover plush is reused; only the middle card smiles and hops.
- * Their accessories are simple, flat yellow SVG accents without dark outlines.
+ * Their accessories are only meaningful symbols: magnifier, offers, check, question marks.
+ * No decorative rays or filler strokes.
  * Pointer gaze and click hops are enabled on the underlying live canvas.
  */
 export type StoryScene = 'explore' | 'compare' | 'choose' | 'question'
@@ -25,7 +26,6 @@ function YellowAccent({ scene }: { scene: StoryScene }) {
       {scene === 'explore' && <>
         <circle cx="144" cy="76" r="19" stroke={YELLOW} strokeWidth="9" />
         <path d="M158 91l22 22" stroke={YELLOW} strokeWidth="11" strokeLinecap="round" />
-        <path d="M39 48l3-12M31 44l-11-7M174 39l6-10" stroke={GOLD} strokeWidth="6" strokeLinecap="round" />
       </>}
       {scene === 'compare' && <>
         <rect x="131" y="66" width="39" height="47" rx="7" fill={YELLOW} />
@@ -35,7 +35,6 @@ function YellowAccent({ scene }: { scene: StoryScene }) {
       </>}
       {scene === 'choose' && <>
         <path d="M146 82l14 14 25-31" stroke={YELLOW} strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M46 37l4-11M37 45l-12-4" stroke={YELLOW} strokeWidth="6" strokeLinecap="round" />
       </>}
       {scene === 'question' && <>
         <text x="27" y="73" fill={YELLOW} fontFamily="Fraunces, Georgia, serif" fontSize="63" fontWeight="700">?</text>
