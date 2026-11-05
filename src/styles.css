@@ -77,6 +77,32 @@ button, input, select { font: inherit; color: inherit; }
 }
 .logo-accent { position: absolute; left: 107.24px; top: -11.1px; transform: rotate(12.4deg); }
 
+/* Full Tilín brand signature: preserve the existing wordmark and accent. */
+.logo-wordmark { position: relative; display: inline-block; }
+.logo-with-claim {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: max-content;
+  max-width: 100%;
+}
+.logo-claim {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.25;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+}
+.hero-logo .logo-claim { color: var(--white); text-shadow: 0 1px 6px rgba(0,0,0,.24); }
+.footer-logo .logo-claim { color: var(--ink); }
+@media (max-width: 560px) {
+  .logo-with-claim { gap: 5px; }
+  .logo-claim { font-size: 11px; }
+}
+
 /* Buttons */
 .button {
   display: inline-flex;
