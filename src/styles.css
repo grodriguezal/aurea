@@ -717,7 +717,7 @@ button, input, select { font: inherit; color: inherit; }
   width: var(--story-size);
   height: var(--story-size);
   flex: none;
-  pointer-events: none;
+  pointer-events: auto;
   user-select: none;
 }
 .story-character__avatar { position: absolute; inset: 0; z-index: 1; }
@@ -726,6 +726,9 @@ button, input, select { font: inherit; color: inherit; }
   left: calc(50% - var(--bot-size) / 2);
   top: calc(50% - var(--bot-size) / 2 + 9px);
   max-width: none;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 .story-character-props {
   display: block;
@@ -736,6 +739,7 @@ button, input, select { font: inherit; color: inherit; }
   height: 100%;
   overflow: visible;
   shape-rendering: geometricPrecision;
+  pointer-events: none;
 }
 
 /* Just three small mascots in the initial benefits, without taking over the copy. */
