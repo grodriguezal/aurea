@@ -7,7 +7,7 @@ export default function SiteFooter() {
   return (
     <footer className="site-footer" {...reveal()}>
       <div className="footer-main">
-        <Logo className="footer-logo" />
+        <Logo className="footer-logo" withClaim />
         <p>Conoce cuánto podrían ofrecerte por tu oro, compara joyerías y decide con información.</p>
         <nav className="footer-links" aria-label="Enlaces del sitio">
           <a href="#comparar">Compara</a>
@@ -17,7 +17,7 @@ export default function SiteFooter() {
         </nav>
       </div>
       <div className="footer-bottom">
-        <small>© {YEAR} Tilín. El oro no se guarda, se mueve.</small>
+        <small>© {YEAR} Tilín. Todos los derechos reservados.</small>
         <small>Versión de demostración · Precios orientativos · Sin reservas reales</small>
       </div>
     </footer>
