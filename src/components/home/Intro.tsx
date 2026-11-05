@@ -14,7 +14,7 @@ export default function Intro() {
   return (
     <div className="intro" id="inicio">
       <header className="hero">
-        <Logo className="hero-logo" />
+        <Logo className="hero-logo" withClaim />
         <div className="hero-content">
           <p className="hero-tagline">¿Quieres vender oro? Descubre cuánto podrían pagarte y compara joyerías sin dar vueltas.</p>
           <h1 className="hero-title">
