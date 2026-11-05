@@ -6,6 +6,7 @@ import { BotAvatar } from 'bot-avatars'
  * three small, contextual benefits and one thoughtful question.
  * The exact same clover plush is reused; only the middle card smiles and hops.
  * Their accessories are simple, flat yellow SVG accents without dark outlines.
+ * Pointer gaze and click hops are enabled on the underlying live canvas.
  */
 export type StoryScene = 'explore' | 'compare' | 'choose' | 'question'
 
@@ -83,9 +84,9 @@ export default function StoryMascot({ scene, size = 112, className = '' }: Props
           face={celebrating ? 'mouth' : undefined}
           speed={celebrating ? 1.05 : 1}
           jumpHeight={celebrating ? 30 : 26}
-          interactive={false}
+          interactive={true}
           jumpEvery={0}
-          jumpSpin={0}
+          jumpSpin={1}
           state={celebrating ? 'working' : 'default'}
         />}
       </div>
