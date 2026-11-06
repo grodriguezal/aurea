@@ -1,7 +1,7 @@
 import { STORES, storeById } from '../data/stores.ts'
 import { dateLabel } from '../lib/dates.ts'
 import { rankStores } from '../lib/pricing.ts'
-import { INTENT_PHRASE, listJoin } from './labels.ts'
+import { INTENT_PHRASE, listJoin, namedPiece, piecesPronoun, yourPieces } from './labels.ts'
 import type { Answer, BookingSnapshot, ChatState, Draft, Message, PresetSlot, Step } from './types.ts'
 
 /**
@@ -58,10 +58,8 @@ const bookingMessage = (draft: Draft, day: string, time: string, notified: boole
 }
 const ASK_CROSS_SELL = 'Aparte de vender, ¿te interesaría en un futuro…?'
 
-const plural = (d: Draft) => d.pieces.length > 1 || d.pieces.includes('otras')
-
 function askWeight(d: Draft) {
-  return plural(d) ? '¿Cuánto pesan tus piezas en total, aproximadamente? Escríbelo en gramos.' : '¿Cuánto pesa tu pieza aproximadamente? Escríbelo en gramos.'
+  return namedPiece(d.pieces) ? `¿Cuánto pesan ${yourPieces(d.pieces)} aproximadamente? Escríbelo en gramos.` : '¿Cuánto pesan tus piezas en total, aproximadamente? Escríbelo en gramos.'
 }
 
 interface Context {
@@ -110,8 +108,8 @@ export function applyAnswer(state: ChatState, answer: Answer, userText: string, 
     }
     case 'weight': {
       draft.weight = answer.weight
-      if (answer.weight === null) out.push(bot('No pasa nada: en la joyería la pesan frente a ti. Por ahora te mostraré el precio por gramo.'))
-      out.push(bot(plural(draft) ? '¿Sabes de cuántos quilates son?' : '¿Sabes de cuántos quilates es?'))
+      if (answer.weight === null) out.push(bot(`No pasa nada: en la joyería ${piecesPronoun(draft.pieces)} pesan frente a ti. Por ahora te mostraré el precio por gramo.`))
+      out.push(bot(namedPiece(draft.pieces) ? `¿Sabes de cuántos quilates son ${yourPieces(draft.pieces)}?` : '¿Sabes de cuántos quilates son?'))
       step = 'karat'
       break
     }
@@ -206,6 +204,14 @@ const HINTS: Partial<Record<Step, string>> = {
   confirm: '¿Confirmamos la cita? Responde sí, o dime si prefieres cambiar la fecha.',
   zone: 'Dime tu municipio o tu urbanización, por ejemplo "Chacao" o "Las Mercedes".',
   crossSell: 'Puedes elegir comprar, obtener un crédito, invertir o digitalizar, o decirme "por ahora no".',
+}
+
+/** While choosing a day (before booking), tapping another jeweler switches to it and restarts the calendar. */
+export function changeStore(state: ChatState, storeId: string): ChatState {
+  const store = storeById(storeId)
+  if (state.step !== 'schedule' || !store || store.id === state.draft.storeId) return state
+  const draft: Draft = { ...state.draft, storeId: store.id, slot: undefined }
+  return { step: 'schedule', draft, messages: [...state.messages, user(`Prefiero ${store.name}`), bot(`Cambiaste a ${store.name}. ¿Cuándo te gustaría ir?`)] }
 }
 
 /** Free text that couldn't be mapped to an answer: echo it and re-ask. */

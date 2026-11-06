@@ -22,12 +22,12 @@ export default function Booking() {
   const [day, setDay] = useState('')
   const [time, setTime] = useState('')
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
-  const store = STORES.find((s) => s.id === storeId) ?? STORES[0]
+  const store = STORES.find((s) => s.id === storeId)
 
   const reset = () => setStatus({ kind: 'idle' })
 
   const book = async () => {
-    if (!day || !time) return
+    if (!store || !day || !time) return
     if (!session) {
       setPendingSlot({ storeId, day, time })
       navigate('signin')
@@ -44,15 +44,15 @@ export default function Booking() {
 
   return (
     <section className="container section booking-section" id="cita" aria-labelledby="bookingHeading">
-      <div className="panel booking-calendar" {...reveal()}>
+      <p className="eyebrow booking-eyebrow" {...reveal()}><span aria-hidden="true">✦</span> Cuando sepas dónde quieres ir</p>
+      <div className="panel booking-calendar" {...reveal(80)}>
         <div className="booking-head">
-          <p className="eyebrow"><span aria-hidden="true">✦</span> Cuando sepas dónde quieres ir</p>
-          <h2 id="bookingHeading" className="result-title">Elige cuándo realizar tu valoración</h2>
-          <p className="booking-intro">Después de comparar, el siguiente paso es revisar tus piezas en persona. Explora el calendario y elige una joyería. Por ahora, los establecimientos y horarios son ilustrativos.</p>
+          <h2 id="bookingHeading" className="result-title">Reserva tu valoración</h2>
+          <p className="booking-intro">Escoge la joyería, el día y la hora. La oferta final te la dan en persona, sin compromiso de venta.</p>
           <label className="field">
-            <span className="field-label">Joyería de tu preferencia</span>
             <span className="field-box field-select">
               <select
+                aria-label="Joyería de tu preferencia"
                 value={storeId}
                 onChange={(e) => {
                   setStoreId(e.target.value)
@@ -62,7 +62,7 @@ export default function Booking() {
                 }}
               >
                 {STORES.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name} · {s.address}{s.example ? ' · ejemplo' : ''}</option>
+                  <option key={s.id} value={s.id}>{s.name} · {s.address}</option>
                 ))}
               </select>
               <img src={chevron} width={20} height={20} alt="" />
@@ -71,15 +71,15 @@ export default function Booking() {
         </div>
 
         <div className="booking-actions">
-          <div className="booking-summary">{day && time ? `${store.name} · ${dateLabel(day)} · ${time}` : 'Elige día y hora para continuar.'}</div>
-          <button type="button" className="button button-dark button-full" disabled={!(day && time) || status.kind === 'booking' || status.kind === 'booked'} onClick={() => void book()}>
+          {store && day && time && <div className="booking-summary">{store.name} · {dateLabel(day)} · {time}</div>}
+          <button type="button" className="button button-dark button-full" disabled={!(store && day && time) || status.kind === 'booking' || status.kind === 'booked'} onClick={() => void book()}>
             {status.kind === 'booking' ? 'AGENDANDO…' : session ? 'AGENDAR CITA' : 'CONTINUAR CON LA CITA'}
           </button>
           {!session && <p className="fine-print">Te pediremos tu WhatsApp para confirmar la cita y conocer tus piezas.</p>}
 
           {status.kind === 'error' && <p className="form-error" role="alert">{status.message}</p>}
           <div className="booking-feedback" role="status" aria-live="polite" hidden={status.kind !== 'booked'}>
-            {status.kind === 'booked' && session && (
+            {status.kind === 'booked' && session && store && (
               <>
                 <strong>{api.mock ? 'Horario seleccionado para la demostración' : '¡Tu cita está agendada!'}</strong>
                 <p>
@@ -89,7 +89,6 @@ export default function Booking() {
               </>
             )}
           </div>
-          {store.example && <p className="fine-print">Estas joyerías, fechas y horas son ejemplos; no representan disponibilidad real ni reservas confirmadas.</p>}
         </div>
         <Calendar
           className="booking-cal"
@@ -105,8 +104,8 @@ export default function Booking() {
             setTime(t)
             reset()
           }}
-          isOpen={(d) => storeSlots(store, dateKey(d)).length > 0}
-          timesFor={(key) => storeSlots(store, key)}
+          isOpen={(d) => !!store && storeSlots(store, dateKey(d)).length > 0}
+          timesFor={(key) => (store ? storeSlots(store, key) : [])}
           windowDays={30}
         />
       </div>

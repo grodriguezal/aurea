@@ -1,4 +1,9 @@
+import { useState } from 'react'
+import chevron from '../../assets/chevron.svg'
 import { reveal } from '../../lib/reveal.ts'
+
+/** Questions shown before "Ver más". */
+const VISIBLE = 4
 
 const QUESTIONS = [
   { q: '¿Tilín me compra el oro?', a: 'No. Tilín te ayuda a conocer precios orientativos, comparar opciones y encontrar joyerías. La compra, si decides hacerla, se realiza directamente con el establecimiento.' },
@@ -11,6 +16,7 @@ const QUESTIONS = [
 ]
 
 export default function Faq() {
+  const [expanded, setExpanded] = useState(false)
   return (
     <section className="container section faq" id="preguntas">
       <div className="faq-intro" {...reveal()}>
@@ -18,13 +24,20 @@ export default function Faq() {
         <h2 className="display display-lg">Preguntar también vale oro.</h2>
         <p className="lede">Antes de vender, es normal tener preguntas. Queremos que entiendas cómo funciona todo, sin letra pequeña.</p>
       </div>
-      <div className="faq-items">
+      <div className="faq-items" id="faqItems">
         {QUESTIONS.map(({ q, a }, i) => (
-          <details key={q} {...reveal(i * 80)}>
+          // Extra questions stay mounted but hidden, so the scroll reveal still animates them in once shown.
+          <details key={q} hidden={!expanded && i >= VISIBLE} {...reveal((i % VISIBLE) * 80)}>
             <summary>{q}<span aria-hidden="true">+</span></summary>
             <p>{a}</p>
           </details>
         ))}
+        {QUESTIONS.length > VISIBLE && (
+          <button type="button" className="faq-more" aria-expanded={expanded} aria-controls="faqItems" onClick={() => setExpanded((v) => !v)}>
+            {expanded ? 'Ver menos' : 'Ver más'}
+            <img src={chevron} width={20} height={20} alt="" />
+          </button>
+        )}
       </div>
     </section>
   )

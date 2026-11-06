@@ -65,8 +65,8 @@ export default function SignIn() {
 
   return (
     <div className="auth-page">
-      <header className="app-bar">
-        <Logo />
+      <header className="drawer-bar">
+        <Logo className="drawer-logo" />
         <DrawerClose onClose={closeDrawer} />
       </header>
 

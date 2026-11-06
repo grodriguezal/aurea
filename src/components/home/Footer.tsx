@@ -18,7 +18,6 @@ export default function SiteFooter() {
       </div>
       <div className="footer-bottom">
         <small>© {YEAR} Tilín. Todos los derechos reservados.</small>
-        <small>Versión de demostración · Precios orientativos · Sin reservas reales</small>
       </div>
     </footer>
   )

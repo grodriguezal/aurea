@@ -57,6 +57,15 @@ export const labelOf = <T,>(options: Option<T>[], value: T) => options.find((o) 
 
 export const listJoin = (items: string[]) => new Intl.ListFormat('es', { type: 'conjunction' }).format(items)
 
+/** One piece type picked (and not "otras"): the conversation names it; otherwise it says "piezas". */
+export const namedPiece = (pieces: Piece[]): Piece | null => (pieces.length === 1 && pieces[0] !== 'otras' ? pieces[0] : null)
+
+/** "tus anillos", or "tus piezas" when several types (or "otras") were picked. */
+export const yourPieces = (pieces: Piece[]) => `tus ${namedPiece(pieces) ?? 'piezas'}`
+
+/** Object pronoun that agrees with `yourPieces`: "los" for anillos/zarcillos, "las" otherwise. */
+export const piecesPronoun = (pieces: Piece[]) => (['anillos', 'zarcillos'].includes(namedPiece(pieces) ?? '') ? 'los' : 'las')
+
 export const piecesPhrase = (pieces: Piece[]) => listJoin(pieces.map((p) => labelOf(PIECES, p).toLowerCase()))
 
 /** "anillos y cadenas · 12 g · 18k", with placeholders for unknowns. */

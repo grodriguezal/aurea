@@ -63,20 +63,19 @@ export default function Calendar({ day, time, onDay, onTime, isOpen, timesFor, w
         })}
       </div>
 
-      <h4 className="times-heading">Horarios disponibles</h4>
-      <div className="time-options">
-        {!day ? (
-          <p>Selecciona una fecha para ver los horarios.</p>
-        ) : times.length === 0 ? (
-          <p>No quedan horarios para este día. Prueba con otra fecha.</p>
-        ) : (
-          times.map((t) => (
-            <button type="button" key={t} className={`time-slot${t === time ? ' selected' : ''}`} aria-pressed={t === time} onClick={() => onTime(t)}>
-              {t}
-            </button>
-          ))
-        )}
-      </div>
+      {day && (
+        <div className="time-options">
+          {times.length === 0 ? (
+            <p>No quedan horarios para este día. Prueba con otra fecha.</p>
+          ) : (
+            times.map((t) => (
+              <button type="button" key={t} className={`time-slot${t === time ? ' selected' : ''}`} aria-pressed={t === time} onClick={() => onTime(t)}>
+                {t}
+              </button>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }

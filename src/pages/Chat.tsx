@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { applyAnswer, misunderstood, restartChat, startChat, startWithSlot, TEXT_STEPS } from '../chat/flow.ts'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { applyAnswer, misunderstood, changeStore, restartChat, startChat, startWithSlot, TEXT_STEPS } from '../chat/flow.ts'
 import type { Answer, ChatState, Message } from '../chat/types.ts'
 import { BookingCard, EstimateCard, OptionsCard, type SpotState } from '../components/chat/Cards.tsx'
 import StepInput from '../components/chat/StepInput.tsx'
 import { ChatMascot } from '../components/Characters.tsx'
-import Logo from '../components/Logo.tsx'
 import { storeById } from '../data/stores.ts'
 import { api, ApiError, type Session } from '../lib/api.ts'
 import { fetchSpotPrice } from '../lib/goldPrice.ts'
 import { DrawerClose } from '../components/Drawer.tsx'
+import Logo from '../components/Logo.tsx'
 import { closeDrawer } from '../lib/route.ts'
 import { clearPendingSlot, loadChat, readPendingSlot, saveChat, setSession } from '../lib/session.ts'
 
@@ -39,22 +39,25 @@ export default function Chat({ session }: { session: Session }) {
   const threadRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const loadSpot = useCallback(
-    () =>
-      fetchSpotPrice().then(
-        (s) => setSpot({ status: 'ok', price: s.price, timestamp: s.timestamp }),
-        () => setSpot({ status: 'error' }),
-      ),
-    [],
-  )
-  const retrySpot = () => {
-    setSpot({ status: 'loading' })
-    void loadSpot()
-  }
-
+  // The gold price only feeds the estimates; if it fails, retry quietly a few times instead of telling the user.
   useEffect(() => {
-    void loadSpot()
-  }, [loadSpot])
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const load = (attempt: number) =>
+      fetchSpotPrice().then(
+        (s) => !cancelled && setSpot({ status: 'ok', price: s.price, timestamp: s.timestamp }),
+        () => {
+          if (cancelled) return
+          if (attempt < 3) timer = setTimeout(() => void load(attempt + 1), 3000 * (attempt + 1))
+          else setSpot({ status: 'error' })
+        },
+      )
+    void load(0)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [])
 
   useEffect(() => clearPendingSlot(), [])
   useEffect(() => saveChat(session.user.id, state), [session.user.id, state])
@@ -152,7 +155,7 @@ export default function Chat({ session }: { session: Session }) {
       case 'text':
         return <p className="bubble bubble-bot">{m.text}</p>
       case 'estimate':
-        return <EstimateCard pieces={m.pieces} weight={m.weight} karat={m.karat} storeId={m.storeId} spot={spot} onRetry={retrySpot} />
+        return <EstimateCard pieces={m.pieces} weight={m.weight} karat={m.karat} storeId={m.storeId} spot={spot} />
       case 'options':
         return (
           <OptionsCard
@@ -162,8 +165,12 @@ export default function Chat({ session }: { session: Session }) {
             karat={state.draft.karat ?? null}
             spot={spot}
             chosenId={m.id === lastOptionsId ? state.draft.storeId : undefined}
-            active={m.id === lastOptionsId && state.step === 'options' && !busy}
-            onChoose={(storeId) => void submit({ step: 'options', storeId }, `Elijo ${storeById(storeId)?.name ?? 'esta joyería'}`)}
+            active={m.id === lastOptionsId && (state.step === 'options' || state.step === 'schedule') && !busy}
+            onChoose={(storeId) =>
+              state.step === 'schedule'
+                ? setState((s) => changeStore(s, storeId))
+                : void submit({ step: 'options', storeId }, `Elijo ${storeById(storeId)?.name ?? 'esta joyería'}`)
+            }
           />
         )
       case 'booking':
@@ -184,13 +191,13 @@ export default function Chat({ session }: { session: Session }) {
 
   return (
     <div className="chat-page">
-      <header className="app-bar chat-bar">
-        <Logo />
-        <div className="chat-bar-actions">
-          <button type="button" className="text-button app-bar-link" disabled={busy} onClick={() => setState((s) => restartChat(s))}>
-            Nueva<span className="hide-narrow"> consulta</span>
-          </button>
-          <button type="button" className="text-button app-bar-link" onClick={signOut}>Salir</button>
+      <header className="drawer-bar">
+        <div className="drawer-bar-group">
+          <Logo className="drawer-logo" />
+          <button type="button" className="drawer-bar-action" disabled={busy} onClick={() => setState((s) => restartChat(s))}>Nueva consulta</button>
+        </div>
+        <div className="drawer-bar-group">
+          <button type="button" className="drawer-bar-action" onClick={signOut}>Salir</button>
           <DrawerClose onClose={closeDrawer} />
         </div>
       </header>
@@ -243,7 +250,6 @@ export default function Chat({ session }: { session: Session }) {
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z" fill="currentColor" /></svg>
         </button>
       </form>
-      {api.mock && <p className="chat-mock-note">Modo de prueba · respuestas interpretadas sin IA · no se envían mensajes</p>}
     </div>
   )
 }

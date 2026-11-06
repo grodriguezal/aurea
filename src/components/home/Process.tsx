@@ -3,10 +3,10 @@ import stepGold from '../../assets/step-gold.png'
 import stepYellow from '../../assets/step-yellow.jpg'
 
 const STEPS = [
-  { tone: 'gold', title: 'Cuéntanos qué tienes', body: 'Elige tus piezas e indica el peso y los quilates aproximados. Si no sabes alguno de esos datos, también puedes avanzar.' },
-  { tone: 'light', title: 'Explora tus opciones', body: 'Conoce un precio orientativo y compara joyerías según lo que más te importa: precio, cercanía o reputación.' },
-  { tone: 'yellow', title: 'Comprueba en persona', body: 'Elige un momento para visitar la joyería. Allí verificarán contigo el peso y la pureza de tu oro.' },
-  { tone: 'dark', title: 'Tú tienes la última palabra', body: 'Con la propuesta definitiva sobre la mesa, decides si vendes. Si no te convence, te llevas tus piezas.' },
+  { tone: 'gold', title: 'Cuéntanos lo que tienes', body: 'Escoge las piezas que quieres vender e indica su peso y los quilates. Te daremos un precio orientativo de su valor.' },
+  { tone: 'light', title: 'Explora tus opciones', body: 'Compara joyerías según lo que más te importa: precio, cercanía o su reputación.' },
+  { tone: 'yellow', title: 'Comprueba en persona', body: 'Haz una cita para visitar la joyería. Allí un profesional certificado verificará contigo el peso y la pureza del oro de tu pieza.' },
+  { tone: 'dark', title: 'Tú tienes la última palabra', body: 'Con la propuesta definitiva sobre la mesa, tú decides si vendes. Si no te convence, te llevas tus piezas.' },
 ] as const
 
 const BACKGROUNDS: Partial<Record<(typeof STEPS)[number]['tone'], string>> = { gold: stepGold, yellow: stepYellow }
@@ -16,8 +16,7 @@ export default function Process() {
     <section className="section process" id="como-funciona">
       <div className="container section-head">
         <p className="eyebrow" {...reveal()}><span aria-hidden="true">✦</span> Así funciona Tilín</p>
-        <h2 className="display display-lg" {...reveal(80)}>De la primera pregunta<br />a la última palabra.</h2>
-        <p className="process-lede" {...reveal(150)}>Sin recorrer varias joyerías para empezar a entender tus opciones.</p>
+        <h2 className="display display-lg" {...reveal(80)}>De la primera pregunta<br className="br-desktop" /> a la última palabra.</h2>
       </div>
       <ol className="process-steps">
         {STEPS.map((s, i) => (

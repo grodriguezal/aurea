@@ -5,7 +5,7 @@ import Faq from '../components/home/Faq.tsx'
 import Intro from '../components/home/Intro.tsx'
 import Process from '../components/home/Process.tsx'
 import ValueSection from '../components/home/ValueSection.tsx'
-import { CompareSection, ConfidenceSection, ClosingSection } from '../components/home/StorySections.tsx'
+import { CompareSection, ConfidenceSection } from '../components/home/StorySections.tsx'
 
 export default function Home() {
   useScrollReveal()
@@ -22,7 +22,6 @@ export default function Home() {
           <ConfidenceSection />
           <Booking />
           <Faq />
-          <ClosingSection />
         </main>
         <SiteFooter />
       </div>

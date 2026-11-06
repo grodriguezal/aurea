@@ -18,9 +18,8 @@ type Props = {
 }
 
 const YELLOW = '#FBE87A'
-const GOLD = '#F8D64C'
 
-function YellowAccent({ scene }: { scene: StoryScene }) {
+export function YellowAccent({ scene }: { scene: StoryScene }) {
   return (
     <svg className="story-character-props" viewBox="0 0 200 200" fill="none" aria-hidden="true">
       {scene === 'explore' && <>
@@ -29,7 +28,7 @@ function YellowAccent({ scene }: { scene: StoryScene }) {
       </>}
       {scene === 'compare' && <>
         <rect x="131" y="66" width="39" height="47" rx="7" fill={YELLOW} />
-        <rect x="149" y="84" width="39" height="47" rx="7" fill={GOLD} />
+        <rect x="149" y="84" width="39" height="47" rx="7" fill={YELLOW} stroke="#FFFFFF" strokeWidth="3" />
         <path d="M158 100h19M158 112h12" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
         <path d="M47 48l7 7 13-16" stroke={YELLOW} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
       </>}
@@ -37,8 +36,8 @@ function YellowAccent({ scene }: { scene: StoryScene }) {
         <path d="M146 82l14 14 25-31" stroke={YELLOW} strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
       </>}
       {scene === 'question' && <>
-        <text x="27" y="73" fill={YELLOW} fontFamily="Fraunces, Georgia, serif" fontSize="63" fontWeight="700">?</text>
-        <text x="149" y="64" fill={GOLD} fontFamily="Fraunces, Georgia, serif" fontSize="48" fontWeight="700">?</text>
+        <text x="27" y="73" fill={YELLOW} fontFamily="Space Grotesk, system-ui, sans-serif" fontSize="63" fontWeight="700">?</text>
+        <text x="149" y="64" fill={YELLOW} fontFamily="Space Grotesk, system-ui, sans-serif" fontSize="48" fontWeight="700">?</text>
       </>}
     </svg>
   )

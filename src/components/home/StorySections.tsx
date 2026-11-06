@@ -1,11 +1,19 @@
+import { useState } from 'react'
 import { reveal } from '../../lib/reveal.ts'
 import { openSignIn, SIGNIN_HREF } from '../../lib/route.ts'
 import { STORES } from '../../data/stores.ts'
+import StoreCardGroup from '../StoreCards.tsx'
 
 // Illustration only: never present these figures as current quotes or real reviews.
 const EXAMPLE_PRICES = ['US$ 670', 'US$ 651', 'US$ 632']
+// Same wording as the chat's priority tags.
+const EXAMPLE_TAGS = ['Mejor precio', 'Más cerca', 'Mejor valorada']
+// Ratings for this illustration only, so the "Mejor valorada" card really has the best one.
+const EXAMPLE_RATINGS = [4.6, 4.7, 4.9]
 
 export function CompareSection() {
+  const stores = STORES.slice(0, 3)
+  const [selected, setSelected] = useState(0)
   return (
     <section className="section compare-section" id="comparar" aria-labelledby="compareTitle">
       <div className="container">
@@ -18,31 +26,18 @@ export function CompareSection() {
         </div>
         <div className="compare-example" {...reveal(150)}>
           <div className="compare-example-head">
-            <div>
-              <span className="compare-kicker">ASÍ SE VERÍA UNA COMPARACIÓN</span>
-              <h3>Imagina una pieza de 10 g y 18K</h3>
-            </div>
-            <span className="compare-demo-label">EJEMPLO ILUSTRATIVO</span>
+            <h3 id="compareExampleTitle">Imagina que tienes un collar de 10 gramos y 18 quilates</h3>
           </div>
-          <div className="compare-cards">
-            {STORES.slice(0, 3).map((store, i) => (
-              <article className="compare-card" key={store.id}>
-                <div className="compare-card-top">
-                  <span className="compare-monogram" aria-hidden="true">{store.name.replace(/^Joyería /, '').charAt(0)}</span>
-                  <span className="compare-card-tag">{i === 0 ? 'Mayor precio de ejemplo' : i === 1 ? 'Otra alternativa' : 'Una opción más'}</span>
-                </div>
-                <h4>{store.name}</h4>
-                <p className="compare-location">{store.address} · Caracas</p>
-                <span className="compare-price-label">Precio de compra simulado</span>
-                <strong className="compare-price">{EXAMPLE_PRICES[i]}</strong>
-                <p className="compare-review"><span aria-hidden="true">★</span> {store.rating.toLocaleString('es-VE', { minimumFractionDigits: 1 })} · {store.reviews} opiniones de ejemplo</p>
-              </article>
-            ))}
-          </div>
-          <p className="compare-disclaimer">Estos nombres, precios, ubicaciones y opiniones son ficticios. No son cotizaciones ni ofertas reales; ilustran cómo podrás comparar joyerías en Tilín.</p>
+          <StoreCardGroup
+            className="compare-cards"
+            labelledBy="compareExampleTitle"
+            items={stores.map((store, i) => ({ store, tag: EXAMPLE_TAGS[i], price: EXAMPLE_PRICES[i], rating: EXAMPLE_RATINGS[i] }))}
+            selected={selected}
+            onSelect={setSelected}
+          />
         </div>
         <div className="compare-action" {...reveal(220)}>
-          <div><strong>Una consulta. Más opciones para decidir.</strong><p>Empieza contándole a Tilín qué piezas tienes.</p></div>
+          <strong>Una consulta. Más opciones para decidir.</strong>
           <a className="button button-dark" href={SIGNIN_HREF} onClick={openSignIn}>EXPLORAR MIS OPCIONES</a>
         </div>
       </div>
@@ -63,20 +58,6 @@ export function ConfidenceSection() {
           <p>Cuando visitas el establecimiento, comprueban contigo el peso y los quilates. Entonces conoces la propuesta final y decides si la aceptas. Sin obligación de vender.</p>
           <a href="#preguntas" className="confidence-link">Resuelve tus dudas <span aria-hidden="true">↗</span></a>
         </div>
-      </div>
-    </section>
-  )
-}
-
-export function ClosingSection() {
-  return (
-    <section className="section closing-section" aria-labelledby="closingTitle">
-      <div className="container closing-content" {...reveal()}>
-        <p className="eyebrow"><span aria-hidden="true">✦</span> El siguiente paso es tuyo</p>
-        <h2 className="display display-lg" id="closingTitle">No tienes que vender hoy.<br />Puedes empezar por saber.</h2>
-        <p>Conoce cuánto podrían pagarte por tu oro y descubre qué opciones tienes antes de elegir una joyería.</p>
-        <a className="button button-dark" href={SIGNIN_HREF} onClick={openSignIn}>EMPEZAR MI CONSULTA</a>
-        <small>La consulta no te compromete a vender. En esta versión, las joyerías y las reservas son de demostración.</small>
       </div>
     </section>
   )
